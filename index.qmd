@@ -234,4 +234,112 @@ doneetype_int
 
 ### Was the purpose of the donation disclosed?
 
+```{r echo=FALSE}
+
+# Iterate over the rows and update NatureOfDonation based on DonationType
+for (i in 1:nrow(may2024)) {
+  if (may2024$DonationType[i] == "Visit") {
+    may2024$NatureOfDonation[i] <- "Visit"
+  }
+}
+
+#fill empty cells with 'undisclosed'
+
+for (i in 1:nrow(may2024)) {
+  if (may2024$NatureOfDonation[i] == "") {
+    may2024$NatureOfDonation[i] <- "Undisclosed"
+  }
+}
+
+#set factor levels
+
+may2024$NatureOfDonation <- factor(may2024$NatureOfDonation, levels = c("Undisclosed", "Staff costs", "Administration services", "Consultancy services", "Visit"))
+
+#group donor status by disclosure of purpose
+
+donor_status_percent <- may2024 %>%
+  group_by(DonorStatus, NatureOfDonation) %>%
+  summarise(Count = n(), .groups = 'drop') %>%
+  group_by(DonorStatus) %>%
+  mutate(Percentage = Count / sum(Count) * 100) %>%
+  ungroup()
+
+#altering display of x-axis labels
+
+donor_status_percent <- donor_status_percent %>%
+  mutate(DonorStatus = case_when(
+    DonorStatus == "Unincorporated Association" ~ "Unincorporated\n Association",
+    TRUE ~ DonorStatus
+  ))
+
+donor_status_percent <- donor_status_percent %>%
+  mutate(DonorStatus = case_when(
+    DonorStatus == "Registered Political Party" ~ "Registered\n Political Party",
+    TRUE ~ DonorStatus
+  ))
+
+#re-order factor
+
+donor_status_percent <- donor_status_percent %>%
+  mutate(DonorStatus = factor(DonorStatus, levels = c("Registered\n Political Party", "Trade Union", "Company", "Individual", "Unincorporated\n Association", "Other")))
+
+# Add a formatted value column for hover text
+donor_status_percent <- donor_status_percent %>%
+  mutate(HoverText = paste0("Total Frequency: ", format(Count), "<br>",
+                            "Percentage: ", sprintf("%.1f", Percentage), 
+                            "<br>",
+                            "Donor Status: ", DonorStatus, "<br>",
+                            "Nature of Donation: ", NatureOfDonation))
+
+#create a stacked bar chart plot
+
+status_colors <- c("Undisclosed" = "#1f78b4", "Staff costs" = "#6a3d9a", "Administration services" = "#ff7f00", "Consultancy services" = "#b2df8a", "Visit" = "lightyellow")
+
+nature_p <- ggplot(donor_status_percent, aes(x = DonorStatus, y = Percentage, fill = NatureOfDonation, text = HoverText)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = status_colors) +
+  labs(title = "",
+       x = "",
+       y = "",
+       fill = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#interactive plot
+
+nature_int <- ggplotly(nature_p, tooltip = c("text"))
+
+#customisation
+
+nature_int <- nature_int %>%
+  layout(
+    legend = list(
+      title = list(text = NULL),  # Remove the legend title
+      orientation = "v",          # Vertical legend
+      x = 1.02,                   
+      xanchor = "left",           # Align to the left
+      y = 0.5,                    # Center vertically
+      yanchor = "middle",         # Align to the middle
+      font = list(size = 10),     # Adjust legend font size
+      itemwidth = 30),
+    margin = list(r = 120),       
+    annotations = list(
+      list(
+        x = 1,                      # Position on the right
+        y = -0.3,                   # Position below the legend
+        text = "Source: Electoral Commission 2024 Donations Data",  
+        showarrow = FALSE,          # No arrow
+        xref = 'paper',             # Relative to the plotting area
+        yref = 'paper',             # Relative to the plotting area
+        xanchor = 'right',          # Align text to the right
+        yanchor = 'auto',           # Automatic vertical alignment
+        font = list(size = 10)      # Adjust annotation font size
+      )
+    )
+  )
+
+nature_int
+
+```
 
