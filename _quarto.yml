@@ -3,20 +3,17 @@ project:
   output-dir: docs
   
 website:
-  title: "MY WEB SITE"
+  title: "Electoral Commission Pre-Election Data"
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - projects.qmd
+        text: "January - May 2024"
     tools:
-      - icon: twitter
-        href: https://twitter.com/
       - icon: github
-        href: https://github.com/YOURUSERNAME/YOURREPO
+        href: https://github.com/hazelcgordon/campaign_donation_tracker
   page-footer:
     right: "Built with [Quarto](https://quarto.org/)"
-    left: "&copy; Copyright 2023, YOUR NAME"
+    left: "&copy; Copyright 2024, Electoral Reform Society"
 
 format:
   html:

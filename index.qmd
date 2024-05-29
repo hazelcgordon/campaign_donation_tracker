@@ -1,19 +1,150 @@
 ---
-title: "About Me"
-about:
-  id: me
-  template: broadside
-  image: img/profile.png
+title: "January - May 2024"
 ---
 
-:::{#me}
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-## Goals
+```{r libraries, warning=FALSE, include=FALSE}
 
-## Education
+library(tidyverse)
+library(ggplot2)
+library(plotly)
 
-## Experience
+```
 
-:::
+## Donations: April/May 2024 period
 
-Thanks for checking out my web site!
+```{r, include=FALSE}
+
+may2024 <- read.csv("donor_may2024.csv")
+
+#columns of interest
+
+may2024 <- may2024 %>%
+  select(AcceptedDate, ReceivedDate, ReportingPeriodName, RegulatedEntityName, RegulatedDoneeType, Value, DonorName, DonorStatus, Postcode, DonationType, NatureOfDonation, PurposeOfVisit)
+
+```
+
+```{r associatied political party, include=FALSE}
+
+#creating a new column for associated political party
+
+labour_names <- c("Andy Burnham", "Steve Rotheram", "Wes Streeting", "Labour To Win", "Dan Jarvis MP", "Labour Together", "Labour Campaign For Electoral Reform", "Michael Shanks", "Ms Kim Leadbeater", "Emma Hardy", "Kim McGuinness", "Rachel Reeves MP", "The Rt Hon David Lammy MP", "Dr Olivia Blake", "Mr Grahame Morris MP", "Ms Diana Ruth Johnson MP", "Mr Navendu Mishra", "Andrew Western", "Sharon Hodgson MP", "Mr Damien Egan", "Mr Steve McCabe", "Ruth Jones", "Anna McMorrin")
+
+conservative_names <- c("Carlton Club Political Committee", "Mr Jonathan Gullis", "Simon Hart MP", "The Rt Hon Dr Liam Fox MP", "Alan Mak MP", "Mr Darren Millar", "Samuel Rowlands", "Russell George", "Simon Clarke", "Ms Caroline Nokes", "Suella Braverman", "Mr Steve Barclay", "Mr Nicholas John Gibb MP", "Mr Alun Cairns MP", "Mr Bim Afolami", "Lucy Frazer MP", "Mr Andy Street", "David Simmonds")
+
+libdem_names <- c("Mr Tim Farron MP")
+
+DUP_names <- c("Jim Shannon")
+
+#mapping political party associations onto names
+
+may2024 <- may2024 %>%
+  mutate(PartyAffiliation = case_when(
+    RegulatedEntityName %in% labour_names ~ "Labour",
+    RegulatedEntityName %in% conservative_names ~ "Conservative",
+    RegulatedEntityName %in% libdem_names ~ "Lib Dem",
+    RegulatedEntityName %in% DUP_names ~ "DUP",
+    TRUE ~ NA_character_  # Default to NA if no match
+  ))
+
+#re-order columns 
+
+may2024 <- may2024 %>%
+  select(AcceptedDate, ReceivedDate, ReportingPeriodName, RegulatedEntityName, PartyAffiliation, RegulatedDoneeType, Value, DonorName, DonorStatus, Postcode, DonationType, NatureOfDonation, PurposeOfVisit)
+
+```
+
+### How much money did each party recieve, and how was this associated with the status of the donor?
+
+```{r echo=FALSE, warning=FALSE, fig.align='center'}
+
+# Remove £ sign and convert to numeric
+may2024$Value <- as.numeric(gsub("[£,\"]", "", may2024$Value))
+
+#set factor levels
+
+may2024$PartyAffiliation <- factor(may2024$PartyAffiliation, levels = c("Conservative", "Labour", "Lib Dem", "DUP"))
+
+may2024$DonorStatus <- factor(may2024$DonorStatus, levels = c("Registered Political Party", "Trade Union", "Company", "Individual", "Unincorporated Association", "Other"))
+
+# Create a complete data frame with all combinations of DonorStatus and PartyAffiliation
+complete_data <- expand.grid(PartyAffiliation = 
+                              levels(may2024$PartyAffiliation), 
+                             DonorStatus = unique(may2024$DonorStatus)
+                             )
+
+#create summary
+
+donorstatus_summary <- may2024 %>%
+  group_by(PartyAffiliation, DonorStatus) %>%
+  summarize(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
+  right_join(complete_data, by = c("PartyAffiliation", "DonorStatus")) %>%
+  replace_na(list(TotalValue = 0))
+
+# Add a formatted value column for hover text
+donorstatus_summary <- donorstatus_summary %>%
+  mutate(HoverText = paste0("Total Value: £", format(TotalValue, big.mark = ",", scientific = FALSE), "<br>",
+                            "Donor Status: ", DonorStatus, "<br>",
+                            "Party Affiliation: ", PartyAffiliation))
+
+#custom colours
+
+custom_colors <- c("Registered Political Party" = "#1f78b4", "Trade Union" = "#e31a1c", "Company" = "#ff7f00", "Individual" = "#6a3d9a", "Unincorporated Association" = "#b2df8a", "Other" = "#FFD700")
+
+# Create the base plot
+donorstatus_p <- ggplot(donorstatus_summary, aes(x = PartyAffiliation, y = TotalValue, fill = DonorStatus, text = HoverText)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "single"), width = 0.7) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+  scale_fill_manual(values = custom_colors) +
+  labs(title = "",
+       x = "",
+       y = "") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 8),
+        legend.margin = margin(t = 10),
+        legend.key.size = unit(0.5, "lines"))
+
+#changing the hover info
+
+donorstatus_int <- ggplotly(donorstatus_p, tooltip = c("text"))
+
+#customisation
+
+donorstatus_int <- donorstatus_int %>%
+  layout(
+    legend = list(
+      title = list(text = NULL),  # Remove the legend title
+      orientation = "h",          # Horizontal legend
+      x = 0.5,                    # Centered horizontally
+      xanchor = "center",         # Center the legend
+      y = -0.2,                   # Position below the plot
+      yanchor = "top",            # Align to the top
+      font = list(size = 10),     # Adjust legend font size
+      itemwidth = 30              # Adjust the width of legend items
+    ),
+       annotations = list(
+      x = 1,                      # Position on the right
+      y = 1,                   # Position below the legend
+      text = "Source: Electoral Commission 2024 Donations Data",  
+      showarrow = FALSE,          # No arrow
+      xref = 'paper',             # Relative to the plotting area
+      yref = 'paper',             # Relative to the plotting area
+      xanchor = 'right',          # Align text to the right
+      yanchor = 'top',           # Automatic vertical alignment
+      font = list(size = 10)      # Adjust annotation font size
+    )
+  )
+
+
+donorstatus_int
+
+```
+
+### How much money did each party recieve, and how was this associated with donee type?
+
+### What was the frequency at which the purpose of the donation was disclosed?
