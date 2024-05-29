@@ -1,5 +1,5 @@
 ---
-title: "January - May 2024"
+title: ""
 ---
 
 ```{r setup, include=FALSE}
@@ -145,6 +145,93 @@ donorstatus_int
 
 ```
 
-### How much money did each party recieve, and how was this associated with donee type?
+### What type of entities recieved the donation within each party?
 
-### What was the frequency at which the purpose of the donation was disclosed?
+```{r echo=FALSE}
+
+#set factor levels
+
+may2024$RegulatedDoneeType <- factor(may2024$RegulatedDoneeType, levels = c("MP - Member of Parliament", "Mayor", "Members Association", "Senedd Member"))
+
+
+# Create a complete data frame with all combinations of Donortype and PartyAffiliation
+complete_data <- expand.grid(PartyAffiliation = 
+                              levels(may2024$PartyAffiliation), 
+                             RegulatedDoneeType = 
+                               unique(may2024$RegulatedDoneeType)
+                             )
+
+#create summary
+
+doneetype_summary <- may2024 %>%
+  group_by(PartyAffiliation, RegulatedDoneeType) %>%
+  summarize(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
+  right_join(complete_data, by = c("PartyAffiliation", 
+                                   "RegulatedDoneeType")) %>%
+  replace_na(list(TotalValue = 0))
+
+# Add a formatted value column for hover text
+doneetype_summary <- doneetype_summary %>%
+  mutate(HoverText = paste0("Total Value: £", format(TotalValue, big.mark = ",", scientific = FALSE), "<br>",
+                            "Donee Type: ", RegulatedDoneeType, "<br>",
+                            "Party Affiliation: ", PartyAffiliation))
+
+#custom colours
+
+type_colors <- c("MP - Member of Parliament" = "#1f78b4", "Mayor" = "#6a3d9a", "Members Association" = "#ff7f00", "Senedd Member" = "#b2df8a")
+
+# Create the base plot
+doneetype_p <- ggplot(doneetype_summary, aes(x = PartyAffiliation, y = TotalValue, fill = RegulatedDoneeType, text = HoverText)) +
+  geom_bar(stat = "identity", position = position_dodge2(preserve = "single"), width = 0.7) +
+  scale_y_continuous(labels = scales::dollar_format(prefix = "£")) +
+  scale_fill_manual(values = type_colors) +
+  labs(title = "",
+       x = "",
+       y = "") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        legend.title = element_blank(),
+        legend.text = element_text(size = 8),
+        legend.margin = margin(t = 10),
+        legend.key.size = unit(0.5, "lines"))
+
+#changing the hover info
+
+doneetype_int <- ggplotly(doneetype_p, tooltip = c("text"))
+
+#customisation
+
+doneetype_int <- doneetype_int %>%
+  layout(
+    legend = list(
+      title = list(text = NULL),  # Remove the legend title
+      orientation = "h",          # Horizontal legend
+      x = 0.5,                    # Centered horizontally
+      xanchor = "center",         # Center the legend
+      y = -0.2,                   # Position below the plot
+      yanchor = "top",            # Align to the top
+      font = list(size = 10),     # Adjust legend font size
+      itemwidth = 30              # Adjust the width of legend items
+    ),
+       annotations = list(
+      x = 1,                      # Position on the right
+      y = 1,                   # Position below the legend
+      text = "Source: Electoral Commission 2024 Donations Data",  
+      showarrow = FALSE,          # No arrow
+      xref = 'paper',             # Relative to the plotting area
+      yref = 'paper',             # Relative to the plotting area
+      xanchor = 'right',          # Align text to the right
+      yanchor = 'top',           # Automatic vertical alignment
+      font = list(size = 10)      # Adjust annotation font size
+    )
+  )
+
+
+doneetype_int
+
+
+```
+
+### Was the purpose of the donation disclosed?
+
+
