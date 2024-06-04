@@ -12,5 +12,19 @@
     "title": "Projects",
     "section": "Project 3",
     "text": "Project 3"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Electoral Commission Pre-Election Data",
+    "section": "",
+    "text": "This graph combines individual MPs, mayors and members associations by their associated political party. The big bar was from Lord Sainsbury and went to ‘Labour Together’.\n\n\n\n\n\n\n\n\n\nThis ones shows the amount split by the type of donee.\n\n\n\n\n\n\n\n\n\nI’m not sure what the requirements are on this for donors - but this one basically shows what % of donors didn’t disclose the purpose of their donation (by donor type), so it says something interesting about the level of transparency behind these things."
+  },
+  {
+    "objectID": "index.html#donations-aprilmay-2024-period",
+    "href": "index.html#donations-aprilmay-2024-period",
+    "title": "Electoral Commission Pre-Election Data",
+    "section": "",
+    "text": "This graph combines individual MPs, mayors and members associations by their associated political party. The big bar was from Lord Sainsbury and went to ‘Labour Together’.\n\n\n\n\n\n\n\n\n\nThis ones shows the amount split by the type of donee.\n\n\n\n\n\n\n\n\n\nI’m not sure what the requirements are on this for donors - but this one basically shows what % of donors didn’t disclose the purpose of their donation (by donor type), so it says something interesting about the level of transparency behind these things."
   }
 ]
