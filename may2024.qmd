@@ -42,11 +42,11 @@ central_party <- central_party %>%
 
 ```
 
-### Lots of small donations, or a few big ones?
+The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or even 'January 2020'. 
 
-These tables only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or even 'January 2020'. Below these tables, I've included a total of all donations made to political parties during these 6 weeks, even when they were reported after the election (in a few cases, years after).
+I'll also make a total of all donations made to political parties during these 6 weeks, even when they were reported after the election (in a few cases, years after).
 
-The table below shows the frequency of donation from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.
+I'll also make a graph showing donations from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.
 
 ```{r include=FALSE}
 
