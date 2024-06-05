@@ -1,0 +1,168 @@
+---
+title: "Pre poll donations 2019 GE"
+---
+
+```{r include=FALSE}
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+
+```
+
+```{r include=FALSE}
+
+#creating a merged dataset with new column for the pre-poll period
+
+alldonations2019 <- read.csv("data2019/alldonations_2019.csv")
+
+# Remove £ sign and convert to numeric
+alldonations2019$Value <- as.numeric(gsub("[£,\"]", "", alldonations2019$Value))
+
+```
+
+```{r include=FALSE}
+
+#this block creates a dataset with only central party donations during pre-poll period 1-6
+
+#delete unnecessary rows
+
+central_party <- alldonations2019 %>%
+  filter(ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019")
+
+#keep only relevant columns
+
+central_party <- central_party %>%
+  select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
+
+```
+
+### Lots of small donations, or a few big ones?
+
+These tables only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or even 'January 2020'. Below these tables, I've included a total of all donations made to political parties during these 6 weeks, even when they were reported after the election (in a few cases, years after).
+
+The table below shows the frequency of donation from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.
+
+```{r include=FALSE}
+
+#set key variables as factors
+
+central_party$RegulatedEntityName <- factor(central_party$RegulatedEntityName, levels = c("Conservative and Unionist Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together [De-registered 01/10/20]", "Reform UK", "Plaid Cymru - The Party of Wales", "Alliance - Alliance Party of Northern Ireland", "Scottish National Party (SNP)", "Sinn Féin", "Democratic Unionist Party - D.U.P.", "Renew", "Women's Equality Party"))
+
+central_party$DonorStatus <- factor(central_party$DonorStatus, levels = c("Individual", "Trade Union", "Company", "Public Fund", "Unincorporated Association", "Limited Liability Partnership"))
+
+central_party$ReportingPeriodName <- factor(central_party$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019", "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019", "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019", "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019", "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019", "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019"))
+
+```
+
+```{r echo=FALSE}
+
+# Create a complete data frame with all combinations of Party Name and Regulation Pre-Poll period
+
+df_prepoll <- expand.grid(RegulatedEntityName = 
+                            levels(central_party$RegulatedEntityName), 
+                         ReportingPeriodName = 
+                           unique(central_party$ReportingPeriodName)
+                         )
+
+# merge the values with each combo
+
+prepoll_table <- df_prepoll %>%
+  left_join(central_party %>%
+              group_by(RegulatedEntityName, ReportingPeriodName) %>%
+            summarise(TotalValue = sum(Value, na.rm = TRUE), 
+                      .groups = 'drop'),
+            by = c("RegulatedEntityName", "ReportingPeriodName"))
+
+prepoll_table$TotalValue[is.na(prepoll_table$TotalValue)] <- 0
+
+#Convert value to money format
+
+prepoll_table$TotalValue <- round(prepoll_table$TotalValue)
+prepoll_table$TotalValue <- sprintf("£%s", format(prepoll_table$TotalValue, big.mark = ",", scientific = FALSE))
+
+#convert to a wide format
+
+prepoll_table <- prepoll_table %>%
+  pivot_wider(names_from = ReportingPeriodName,
+              values_from = TotalValue)
+
+#re-order columns
+
+prepoll_table <- prepoll_table %>%
+  select(RegulatedEntityName, `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`, `Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019`, `Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019`, `Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019`, `Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019`, `Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019`)
+
+# create a totals column
+
+#prepoll_table <- prepoll_table %>%
+#  mutate(TotalValue = `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`|`Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019`|`Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019`|`Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019`|`Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019`|`Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019`)
+
+```
+
+```{r echo=FALSE}
+
+#create the table
+
+prepoll_table <- kable(prepoll_table, "html") %>%
+  kable_styling(full_width = FALSE)
+
+prepoll_table
+
+```
+
+
+```{r include=FALSE}
+
+# Create a complete data frame with all combinations of Party Name and Donor Status
+df_donationsize <- expand.grid(RegulatedEntityName = 
+                              levels(central_party$RegulatedEntityName), 
+                             DonorStatus = 
+                               unique(central_party$DonorStatus)
+                             )
+
+size_table <- df_donationsize %>%
+  left_join(central_party %>%
+              group_by(RegulatedEntityName, DonorStatus) %>%
+              summarise(Frequency = n(),
+                        TotalSum = sum(Value, na.rm = TRUE),
+                        .groups = 'drop'),
+            by = c("RegulatedEntityName", "DonorStatus")) %>%
+  mutate(Frequency = ifelse(is.na(Frequency), 0, Frequency))
+
+size_table$TotalSum[is.na(size_table$TotalSum)] <- 0
+
+#calculate the average donation for each category
+
+size_table <- size_table %>%
+  mutate(Average = TotalSum/Frequency)
+
+```
+
+```{r echo=FALSE}
+
+#remove decimal places on money values
+
+size_table$TotalSum <- round(size_table$TotalSum)
+size_table$Average <- round(size_table$Average)
+
+#convert numbers into pound values
+
+size_table$TotalSum <- sprintf("£%s", format(size_table$TotalSum, big.mark = ",", scientific = FALSE))
+
+size_table$Average <- sprintf("£%s", format(size_table$Average, big.mark = ",", scientific = FALSE))
+
+#create the table
+
+markdown_table <- kable(size_table, "html") %>%
+  kable_styling(full_width = FALSE)
+
+markdown_table
+
+```
+
+

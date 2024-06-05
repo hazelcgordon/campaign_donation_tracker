@@ -8,6 +8,8 @@ website:
     left:
       - href: index.qmd
         text: "January - May 2024"
+      - href: may2024.qmd
+        text: "2019 GE"
     tools:
       - icon: github
         href: https://github.com/hazelcgordon/campaign_donation_tracker
