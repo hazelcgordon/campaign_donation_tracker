@@ -11,76 +11,181 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)
 library(plotly)
+library(lubridate)
+library(scales)
 
 ```
 
-## Donations: April/May 2024 period
+## Donations: Q1 2024 period
 
-```{r, include=FALSE}
+```{r include=FALSE}
 
-may2024 <- read.csv("donor_may2024.csv")
+q1 <- read.csv("jan_may_2024.csv")
 
-#columns of interest
+#select relevant variables, extract month out of date
 
-may2024 <- may2024 %>%
-  select(AcceptedDate, ReceivedDate, ReportingPeriodName, RegulatedEntityName, RegulatedDoneeType, Value, DonorName, DonorStatus, Postcode, DonationType, NatureOfDonation, PurposeOfVisit)
+q1 <- q1 %>%
+  select(RegulatedEntityName, RegulatedEntityType, RegulatedDoneeType, Value, ReceivedDate, DonorStatus, AccountingUnitName) %>%
+  mutate(Date = as.Date(ReceivedDate, format = "%d/%m/%Y")) %>%
+  mutate(Month = floor_date(Date, "month")) %>%
+  mutate(MonthName = format(Month, "%B"))
+
+#factor level as months
+
+q1$MonthName <- factor(q1$MonthName, levels = c("January", "February", "March", "April"))
+
+# Remove £ sign and convert to numeric
+q1$Value <- as.numeric(gsub("[£,\"]", "", q1$Value))
+  
+```
+
+### What's been happening between Jan and May, who's been donating (by donor type)?
+
+This includes the recently released donations for Q1, but also any donation that been registered with the EC so far for this year. Full figures not released for April/May period yet.
+
+```{r include=FALSE}
+
+#getting the dataframe for the donor type plot over time
+
+donortype_plot <- q1 %>%
+  select(MonthName, DonorStatus, Value) %>%
+  group_by(MonthName, DonorStatus) %>%
+  summarise(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
+  pivot_wider(names_from = DonorStatus, values_from = TotalValue)
+
+# convert NA's to 0 and round values to 0 d.p.
+
+donortype_plot <- donortype_plot %>%
+  mutate_all(~replace(., is.na(.), 0)) %>%
+  mutate(across(where(is.numeric), ~round(., 0)))
+
+# factor levels for months
+
+donortype_plot$MonthName <- factor(donortype_plot$MonthName, levels = c("January", "February", "March", "April"))
 
 ```
+
+```{r echo=FALSE}
+
+# Custom hover text with currency formatting
+donortype_plot <- donortype_plot %>%
+  mutate(
+    PoliticalParty_text = paste("Registered Political Party: £", comma(`Registered Political Party`)),
+    Company_text = paste("Company: £", comma(`Company`)),
+    Individual_text = paste("Individual: £", comma(`Individual`)),
+    FriendlySociety_text = paste("Friendly Society: £", comma(`Friendly Society`)),
+    ImpermissibleDonor_text = paste("Impermissible Donor: £", comma(`Impermissible Donor`)),
+    LLP_text = paste("Limited Liability Partnership: £", comma(`Limited Liability Partnership`)),
+    PublicFund_text = paste("Public Fund: £", comma(`Public Fund`)),
+    TradeUnion_text = paste("Trade Union: £", comma(`Trade Union`)),
+    Trust_text = paste("Trust: £", comma(`Trust`)),
+    Unincorporated_text = paste("Unincorporated Association: £", comma(`Unincorporated Association`))
+  )
+
+type_plot <- plot_ly(donortype_plot, x = ~MonthName) %>%
+  add_lines(y = ~`Registered Political Party`, name = 'Registered Political Party', text = ~PoliticalParty_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Company`, name = 'Company', text = ~Company_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Individual`, name = 'Individual', text = ~Individual_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Trade Union`, name = 'Trade Union', text = ~TradeUnion_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Friendly Society`, name = 'Friendly Society', text = ~FriendlySociety_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Limited Liability Partnership`, name = 'Limited Liability Partnership', text = ~LLP_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Public Fund`, name = 'Public Fund', text = ~PublicFund_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Trust`, name = 'Trust', text = ~Trust_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Impermissible Donor`, name = 'Impermissible Donor', text = ~ImpermissibleDonor_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Unincorporated Association`, name = 'Unincorporated Association', text = ~Unincorporated_text, hoverinfo = 'text') %>%
+  layout(
+    xaxis = list(title = ''),
+    yaxis = list(title = 'Total Value Donated'),
+    hovermode = 'closest' 
+  )
+
+type_plot
+
+```
+
+### What kind of donee's have recieved the most money?
 
 ```{r associatied political party, include=FALSE}
 
 #creating a new column for associated political party
 
-labour_names <- c("Andy Burnham", "Steve Rotheram", "Wes Streeting", "Labour To Win", "Dan Jarvis MP", "Labour Together", "Labour Campaign For Electoral Reform", "Michael Shanks", "Ms Kim Leadbeater", "Emma Hardy", "Kim McGuinness", "Rachel Reeves MP", "The Rt Hon David Lammy MP", "Dr Olivia Blake", "Mr Grahame Morris MP", "Ms Diana Ruth Johnson MP", "Mr Navendu Mishra", "Andrew Western", "Sharon Hodgson MP", "Mr Damien Egan", "Mr Steve McCabe", "Ruth Jones", "Anna McMorrin")
+labour_names <- c("Andy Burnham", "Steve Rotheram", "Wes Streeting", "Labour To Win", "Dan Jarvis MP", "Labour Together", "Labour Campaign For Electoral Reform", "Michael Shanks", "Ms Kim Leadbeater", "Emma Hardy", "Kim McGuinness", "Rachel Reeves MP", "The Rt Hon David Lammy MP", "Dr Olivia Blake", "Mr Grahame Morris MP", "Ms Diana Ruth Johnson MP", "Mr Navendu Mishra", "Andrew Western", "Sharon Hodgson MP", "Mr Damien Egan", "Mr Steve McCabe", "Ruth Jones", "Anna McMorrin", "Labour Party", "Co-operative Party", "Dan Carden", "Jeremy Miles", "Marsha De Cordova", "Mr Dan Norris", "Mr Jonathan Reynolds MP", "Mr Vaughan Gething", "Ms Bridget Phillipson MP", "Ms Yasmin Qureshi MP", "Peter Kyle MP", "Rachel Reeves MP", "Ruth Jones", "Sam Tarry", "Shabana Mahmood MP", "The Rt Hon Yvette Cooper MP", "Wes Streeting")
 
-conservative_names <- c("Carlton Club Political Committee", "Mr Jonathan Gullis", "Simon Hart MP", "The Rt Hon Dr Liam Fox MP", "Alan Mak MP", "Mr Darren Millar", "Samuel Rowlands", "Russell George", "Simon Clarke", "Ms Caroline Nokes", "Suella Braverman", "Mr Steve Barclay", "Mr Nicholas John Gibb MP", "Mr Alun Cairns MP", "Mr Bim Afolami", "Lucy Frazer MP", "Mr Andy Street", "David Simmonds")
+conservative_names <- c("Carlton Club Political Committee", "Mr Jonathan Gullis", "Simon Hart MP", "The Rt Hon Dr Liam Fox MP", "Alan Mak MP", "Mr Darren Millar", "Samuel Rowlands", "Russell George", "Simon Clarke", "Ms Caroline Nokes", "Suella Braverman", "Mr Steve Barclay", "Mr Nicholas John Gibb MP", "Mr Alun Cairns MP", "Mr Bim Afolami", "Lucy Frazer MP", "Mr Andy Street", "David Simmonds", "New Conservatives Ltd", "Conservative and Unionist Party", "Association of Conservative Peers (ACP)", "Gagan Mohindra", "Gareth Davies", "Gavin Williamson", "Johnny Mercer MP", "Kemi Badenoch", "Lia Nici", "Mr Andrew Griffiths MP", "Mr Ben Houchen", "Mr Brandon Lewis MP", "Mr Jake Berry MP", "Mr John Stevenson MP", "Mr Jonathan Gullis", "Mr Michael Gove MP", "Mrs Laura Trott", "Ms Jo Gideon", "Ms Virginia Crosbie", "Shaun Bailey", "Suzanne Webb", "The Rt Hon David Mundell MP")
 
-libdem_names <- c("Mr Tim Farron MP")
+libdem_names <- c("Mr Tim Farron MP", "Liberal Democrats")
+
+reform_names <- c("Reform UK")
+
+sf_names <- c("Sinn Féin")
+
+alliance_names <- c("Alliance - Alliance Party of Northern Ireland")
+
+sdlp_names <- c("SDLP (Social Democratic & Labour Party)")
+
+ulster_names <- c("Ulster Unionist Party")
+
+SNP_names <- c("Scottish National Party (SNP)", "Mr Martyn Day MP")
 
 DUP_names <- c("Jim Shannon")
 
+plaid_names <- c("Plaid Cymru - The Party of Wales")
+
+green_names <- c("Green Party")
+
+other_party_names <- c("Animal Welfare Party", "Social Democratic Party", "The Reclaim Party", "The Socialist Party of Great Britain", "True & Fair Party")
+
+third_party_names <- c("Best for Britain Limited", "Make Votes Matter")
+
 #mapping political party associations onto names
 
-may2024 <- may2024 %>%
+q1 <- q1 %>%
   mutate(PartyAffiliation = case_when(
     RegulatedEntityName %in% labour_names ~ "Labour",
     RegulatedEntityName %in% conservative_names ~ "Conservative",
     RegulatedEntityName %in% libdem_names ~ "Lib Dem",
+    RegulatedEntityName %in% reform_names ~ "Reform UK",
+    RegulatedEntityName %in% sf_names ~ "Sinn Féin",
+    RegulatedEntityName %in% alliance_names ~ "Alliance",
+    RegulatedEntityName %in% sdlp_names ~ "SDLP",
+    RegulatedEntityName %in% ulster_names ~ "Ulster Unionist Party",
+    RegulatedEntityName %in% SNP_names ~ "SNP",
+    RegulatedEntityName %in% plaid_names ~ "Plaid Cymru",
+    RegulatedEntityName %in% green_names ~ "Greens",
     RegulatedEntityName %in% DUP_names ~ "DUP",
+    RegulatedEntityName %in% third_party_names ~ "Non-Party",
+    RegulatedEntityName %in% other_party_names ~ "Other",
     TRUE ~ NA_character_  # Default to NA if no match
   ))
 
 #re-order columns 
 
-may2024 <- may2024 %>%
-  select(AcceptedDate, ReceivedDate, ReportingPeriodName, RegulatedEntityName, PartyAffiliation, RegulatedDoneeType, Value, DonorName, DonorStatus, Postcode, DonationType, NatureOfDonation, PurposeOfVisit)
+q1 <- q1 %>%
+  select(RegulatedEntityName, RegulatedEntityType, RegulatedDoneeType, PartyAffiliation, Value, ReceivedDate, MonthName, DonorStatus, AccountingUnitName)
 
 ```
 
-### How much money did each party get, and from what types of donors?
+### How much money did each party get between Jan and May, and from what types of donors?
 
-This graph combines individual MPs, mayors and members associations by their associated political party. The big bar was from Lord Sainsbury and went to 'Labour Together'.
+This graph combines individual MPs, mayors and members associations by their associated political party. 
 
 ```{r echo=FALSE, warning=FALSE, fig.align='center'}
 
-# Remove £ sign and convert to numeric
-may2024$Value <- as.numeric(gsub("[£,\"]", "", may2024$Value))
-
 #set factor levels
 
-may2024$PartyAffiliation <- factor(may2024$PartyAffiliation, levels = c("Conservative", "Labour", "Lib Dem", "DUP"))
+q1$PartyAffiliation <- factor(q1$PartyAffiliation, levels = c("Conservative", "Labour", "Lib Dem", "Reform UK", "Greens", "SNP", "Plaid Cymru", "DUP", "Alliance", "Sinn Féin", "SDLP", "Ulster Unionist Party", "Non-Party", "Other"))
 
-may2024$DonorStatus <- factor(may2024$DonorStatus, levels = c("Registered Political Party", "Trade Union", "Company", "Individual", "Unincorporated Association", "Other"))
+q1$DonorStatus <- factor(q1$DonorStatus, levels = c("Registered Political Party", "Trade Union", "Company", "Individual", "Public Fund", "Trust", "Unincorporated Association", "Limited Liability Partnership", "Friendly Society", "Impermissible Donor"))
 
 # Create a complete data frame with all combinations of DonorStatus and PartyAffiliation
 complete_data <- expand.grid(PartyAffiliation = 
-                              levels(may2024$PartyAffiliation), 
-                             DonorStatus = unique(may2024$DonorStatus)
+                              levels(q1$PartyAffiliation), 
+                             DonorStatus = unique(q1$DonorStatus)
                              )
 
 #create summary
 
-donorstatus_summary <- may2024 %>%
+donorstatus_summary <- q1 %>%
   group_by(PartyAffiliation, DonorStatus) %>%
   summarize(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
   right_join(complete_data, by = c("PartyAffiliation", "DonorStatus")) %>%
@@ -94,7 +199,7 @@ donorstatus_summary <- donorstatus_summary %>%
 
 #custom colours
 
-custom_colors <- c("Registered Political Party" = "#1f78b4", "Trade Union" = "#e31a1c", "Company" = "#ff7f00", "Individual" = "#6a3d9a", "Unincorporated Association" = "#b2df8a", "Other" = "#FFD700")
+custom_colors <- c("Registered Political Party" = "#1f78b4", "Trade Union" = "#e31a1c", "Company" = "#ff7f00", "Individual" = "#6a3d9a", "Unincorporated Association" = "#b2df8a", "Trust" = "#FFD700", "Friendly Society" = "sienna", "Limited Liability Partnership" = "#2ca02c", "Impermissible Donor" = "#e377c2", "Public Fund" = "#7f7f7f")
 
 # Create the base plot
 donorstatus_p <- ggplot(donorstatus_summary, aes(x = PartyAffiliation, y = TotalValue, fill = DonorStatus, text = HoverText)) +
@@ -109,7 +214,8 @@ donorstatus_p <- ggplot(donorstatus_summary, aes(x = PartyAffiliation, y = Total
         legend.title = element_blank(),
         legend.text = element_text(size = 8),
         legend.margin = margin(t = 10),
-        legend.key.size = unit(0.5, "lines"))
+        legend.key.size = unit(0.5, "lines"),
+        axis.text.x = element_text(angle = 45, hjust = 1))
 
 #changing the hover info
 
@@ -119,6 +225,9 @@ donorstatus_int <- ggplotly(donorstatus_p, tooltip = c("text"))
 
 donorstatus_int <- donorstatus_int %>%
   layout(
+    xaxis = list(
+      tickangle = -45  # Rotate x-axis text in plotly
+    ),
     legend = list(
       title = list(text = NULL),  # Remove the legend title
       orientation = "h",          # Horizontal legend
@@ -151,9 +260,8 @@ donorstatus_int
 
 This ones shows the amount split by the type of donee.
 
-```{r echo=FALSE}
 
-#set factor levels
+```{r eval=FALSE}
 
 may2024$RegulatedDoneeType <- factor(may2024$RegulatedDoneeType, levels = c("MP - Member of Parliament", "Mayor", "Members Association", "Senedd Member"))
 
@@ -240,7 +348,7 @@ doneetype_int
 
 I'm not sure what the requirements are on this for donors - but this one basically shows what % of donors didn't disclose the purpose of their donation (by donor type), so it says something interesting about the level of transparency behind these things.
 
-```{r echo=FALSE}
+```{r eval=FALSE}
 
 # Iterate over the rows and update NatureOfDonation based on DonationType
 for (i in 1:nrow(may2024)) {

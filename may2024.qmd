@@ -2,6 +2,14 @@
 title: "Pre poll donations 2019 GE"
 ---
 
+Goals for this page:
+
+- Create data summaries for the following questions ready for comparison with 2024 data:
+  - Total donated to each party, classified as official pre-poll regulatory period
+  - Table to get a sense of lots of small donations, or a few big ones, and where were they coming from.
+  - Plot of type of donor and total amount donated across each week.
+  - From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?
+
 ```{r include=FALSE}
 
 library(tidyverse)
@@ -42,9 +50,7 @@ central_party <- central_party %>%
 
 ```
 
-The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or even 'January 2020'. 
-
-I'll also make a total of all donations made to political parties during these 6 weeks, even when they were reported after the election (in a few cases, years after).
+The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
 
 I'll also make a graph showing donations from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.
 
@@ -160,8 +166,6 @@ size_table$Average <- sprintf("£%s", format(size_table$Average, big.mark = ",",
 
 markdown_table <- kable(size_table, "html") %>%
   kable_styling(full_width = FALSE)
-
-markdown_table
 
 ```
 
