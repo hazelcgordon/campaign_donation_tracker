@@ -103,7 +103,60 @@ type_plot
 
 ```
 
-### What kind of donee's have recieved the most money?
+### What kind of donee's have recieved the most money over this period?
+
+```{r include=FALSE}
+
+#switching the empty donee status's to political parties
+
+q1 <- q1 %>%
+  mutate(RegulatedDoneeType = if_else(RegulatedDoneeType == "", "Political Party", RegulatedDoneeType))
+         
+#getting the dataframe for the donee plot over time
+
+doneetype_plot <- q1 %>%
+  select(MonthName, RegulatedDoneeType, Value) %>%
+  group_by(MonthName, RegulatedDoneeType) %>%
+  summarise(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
+  pivot_wider(names_from = RegulatedDoneeType, values_from = TotalValue)
+
+# convert NA's to 0 and round values to 0 d.p.
+
+doneetype_plot <- doneetype_plot %>%
+  mutate_all(~replace(., is.na(.), 0)) %>%
+  mutate(across(where(is.numeric), ~round(., 0)))
+
+```
+
+```{r echo=FALSE}
+
+# Custom hover text with currency formatting
+doneetype_plot <- doneetype_plot %>%
+  mutate(
+    PoliticalParty_text = paste("Political Party: £", comma(`Political Party`)),
+    MP_text = paste("MP: £", comma(`MP - Member of Parliament`)),
+    MA_text = paste("Members Association: £", comma(`Members Association`)),
+    Mayor_text = paste("Mayor: £", comma(`Mayor`)),
+    Senedd_text = paste("Senedd Member: £", comma(`Senedd Member`))
+  )
+
+donee_plot <- plot_ly(doneetype_plot, x = ~MonthName) %>%
+  add_lines(y = ~`Political Party`, name = 'Political Party', text = ~PoliticalParty_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`MP - Member of Parliament`, name = 'MP', text = ~MP_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Mayor`, name = 'Mayor', text = ~Mayor_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Members Association`, name = 'Members Association', text = ~MA_text, hoverinfo = 'text') %>%
+  add_lines(y = ~`Senedd Member`, name = 'Senedd Member', text = ~Senedd_text, hoverinfo = 'text') %>%
+  layout(
+    xaxis = list(title = ''),
+    yaxis = list(title = 'Total Value Donated'),
+    hovermode = 'closest' 
+  )
+
+donee_plot
+
+```
+
+
 
 ```{r associatied political party, include=FALSE}
 
@@ -256,17 +309,8 @@ donorstatus_int
 
 ```
 
-### What type of donee's recieved the donation within each party?
-
-This ones shows the amount split by the type of donee.
-
 
 ```{r include=FALSE}
-
-#set blank values to other
-
-q1 <- q1 %>%
-  mutate(RegulatedDoneeType = if_else(RegulatedDoneeType == "", "Political Party", RegulatedDoneeType))
 
 #set factor level
 
@@ -421,8 +465,6 @@ donor_status_percent <- donor_status_percent %>%
     DonorStatus == "Limited Liability Partnership" ~ "Limited Liability\n Partnership",
     TRUE ~ DonorStatus
   ))
-
-
 
 #re-order factor
 
