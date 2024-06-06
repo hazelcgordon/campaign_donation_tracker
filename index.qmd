@@ -20,12 +20,12 @@ library(scales)
 
 ```{r include=FALSE}
 
-q1 <- read.csv("jan_may_2024.csv")
+raw <- read.csv("jan_may_2024.csv")
 
 #select relevant variables, extract month out of date
 
-q1 <- q1 %>%
-  select(RegulatedEntityName, RegulatedEntityType, RegulatedDoneeType, Value, ReceivedDate, DonorStatus, AccountingUnitName) %>%
+q1 <- raw %>%
+  select(RegulatedEntityName, RegulatedEntityType, RegulatedDoneeType, Value, ReceivedDate, DonorStatus, AccountingUnitName, NatureOfDonation, DonationType) %>%
   mutate(Date = as.Date(ReceivedDate, format = "%d/%m/%Y")) %>%
   mutate(Month = floor_date(Date, "month")) %>%
   mutate(MonthName = format(Month, "%B"))
@@ -261,23 +261,30 @@ donorstatus_int
 This ones shows the amount split by the type of donee.
 
 
-```{r eval=FALSE}
+```{r include=FALSE}
 
-may2024$RegulatedDoneeType <- factor(may2024$RegulatedDoneeType, levels = c("MP - Member of Parliament", "Mayor", "Members Association", "Senedd Member"))
+#set blank values to other
+
+q1 <- q1 %>%
+  mutate(RegulatedDoneeType = if_else(RegulatedDoneeType == "", "Political Party", RegulatedDoneeType))
+
+#set factor level
+
+q1$RegulatedDoneeType <- factor(q1$RegulatedDoneeType, levels = c("Political Party", "MP - Member of Parliament", "Mayor", "Members Association", "Senedd Member"))
 
 
 # Create a complete data frame with all combinations of Donortype and PartyAffiliation
 complete_data <- expand.grid(PartyAffiliation = 
-                              levels(may2024$PartyAffiliation), 
+                              levels(q1$PartyAffiliation), 
                              RegulatedDoneeType = 
-                               unique(may2024$RegulatedDoneeType)
+                               unique(q1$RegulatedDoneeType)
                              )
 
 #create summary
 
-doneetype_summary <- may2024 %>%
+doneetype_summary <- q1 %>%
   group_by(PartyAffiliation, RegulatedDoneeType) %>%
-  summarize(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
+  summarise(TotalValue = sum(Value, na.rm = TRUE), .groups = 'drop') %>%
   right_join(complete_data, by = c("PartyAffiliation", 
                                    "RegulatedDoneeType")) %>%
   replace_na(list(TotalValue = 0))
@@ -290,7 +297,7 @@ doneetype_summary <- doneetype_summary %>%
 
 #custom colours
 
-type_colors <- c("MP - Member of Parliament" = "#1f78b4", "Mayor" = "#6a3d9a", "Members Association" = "#ff7f00", "Senedd Member" = "#b2df8a")
+type_colors <- c("MP - Member of Parliament" = "#1f78b4", "Mayor" = "#6a3d9a", "Members Association" = "#ff7f00", "Senedd Member" = "#b2df8a", "Political Party" = "#e377c2")
 
 # Create the base plot
 doneetype_p <- ggplot(doneetype_summary, aes(x = PartyAffiliation, y = TotalValue, fill = RegulatedDoneeType, text = HoverText)) +
@@ -305,7 +312,8 @@ doneetype_p <- ggplot(doneetype_summary, aes(x = PartyAffiliation, y = TotalValu
         legend.title = element_blank(),
         legend.text = element_text(size = 8),
         legend.margin = margin(t = 10),
-        legend.key.size = unit(0.5, "lines"))
+        legend.key.size = unit(0.5, "lines"),
+        axis.text.x = element_text(angle = 45, hjust = 1))
 
 #changing the hover info
 
@@ -315,6 +323,9 @@ doneetype_int <- ggplotly(doneetype_p, tooltip = c("text"))
 
 doneetype_int <- doneetype_int %>%
   layout(
+    xaxis = list(
+      tickangle = -45  # Rotate x-axis text in plotly
+    ),
     legend = list(
       title = list(text = NULL),  # Remove the legend title
       orientation = "h",          # Horizontal legend
@@ -348,30 +359,43 @@ doneetype_int
 
 I'm not sure what the requirements are on this for donors - but this one basically shows what % of donors didn't disclose the purpose of their donation (by donor type), so it says something interesting about the level of transparency behind these things.
 
-```{r eval=FALSE}
+```{r echo=FALSE}
+
+q1 <- raw %>%
+  select(RegulatedEntityName, RegulatedEntityType, RegulatedDoneeType, Value, ReceivedDate, DonorStatus, AccountingUnitName, NatureOfDonation, DonationType) %>%
+  mutate(Date = as.Date(ReceivedDate, format = "%d/%m/%Y")) %>%
+  mutate(Month = floor_date(Date, "month")) %>%
+  mutate(MonthName = format(Month, "%B"))
+
+#factor level as months
+
+q1$MonthName <- factor(q1$MonthName, levels = c("January", "February", "March", "April"))
+
+# Remove £ sign and convert to numeric
+q1$Value <- as.numeric(gsub("[£,\"]", "", q1$Value))
 
 # Iterate over the rows and update NatureOfDonation based on DonationType
-for (i in 1:nrow(may2024)) {
-  if (may2024$DonationType[i] == "Visit") {
-    may2024$NatureOfDonation[i] <- "Visit"
+for (i in 1:nrow(q1)) {
+  if (q1$DonationType[i] == "Visit") {
+    q1$NatureOfDonation[i] <- "Visit"
   }
 }
 
 #fill empty cells with 'undisclosed'
 
-for (i in 1:nrow(may2024)) {
-  if (may2024$NatureOfDonation[i] == "") {
-    may2024$NatureOfDonation[i] <- "Undisclosed"
+for (i in 1:nrow(q1)) {
+  if (q1$NatureOfDonation[i] == "") {
+    q1$NatureOfDonation[i] <- "Undisclosed"
   }
 }
 
 #set factor levels
 
-may2024$NatureOfDonation <- factor(may2024$NatureOfDonation, levels = c("Undisclosed", "Staff costs", "Administration services", "Consultancy services", "Visit"))
+q1$NatureOfDonation <- factor(q1$NatureOfDonation, levels = c("Undisclosed", "Staff costs", "Administration services", "Consultancy services", "Visit", "Advertising", "Sponsorship", "Auction prizes", "Cranborne Money (House of Lords)", "Travel", "Hospitality", "Short Money (House of Commons)", "Assistance for Parties (Scottish Parliament)", "Financial Assistance for Parties in NI Assembly", "Premises", "Other Payment", "Other"))
 
 #group donor status by disclosure of purpose
 
-donor_status_percent <- may2024 %>%
+donor_status_percent <- q1 %>%
   group_by(DonorStatus, NatureOfDonation) %>%
   summarise(Count = n(), .groups = 'drop') %>%
   group_by(DonorStatus) %>%
@@ -392,10 +416,18 @@ donor_status_percent <- donor_status_percent %>%
     TRUE ~ DonorStatus
   ))
 
+donor_status_percent <- donor_status_percent %>%
+  mutate(DonorStatus = case_when(
+    DonorStatus == "Limited Liability Partnership" ~ "Limited Liability\n Partnership",
+    TRUE ~ DonorStatus
+  ))
+
+
+
 #re-order factor
 
 donor_status_percent <- donor_status_percent %>%
-  mutate(DonorStatus = factor(DonorStatus, levels = c("Registered\n Political Party", "Trade Union", "Company", "Individual", "Unincorporated\n Association", "Other")))
+  mutate(DonorStatus = factor(DonorStatus, levels = c("Registered\n Political Party", "Trade Union", "Company", "Individual", "Unincorporated\n Association", "Friendly Society", "Public Fund", "Limited Liability\n Partnership", "Trust", "Impermissible Donor")))
 
 # Add a formatted value column for hover text
 donor_status_percent <- donor_status_percent %>%
@@ -406,7 +438,25 @@ donor_status_percent <- donor_status_percent %>%
 
 #create a stacked bar chart plot
 
-status_colors <- c("Undisclosed" = "#1f78b4", "Staff costs" = "#6a3d9a", "Administration services" = "#ff7f00", "Consultancy services" = "#b2df8a", "Visit" = "lightyellow")
+status_colors <- c(
+  "Undisclosed" = "#1f78b4",
+  "Staff costs" = "#6a3d9a",
+  "Administration services" = "#ff7f00",
+  "Consultancy services" = "#b2df8a",
+  "Visit" = "lightyellow",
+  "Advertising" = "#e31a1c",
+  "Sponsorship" = "#a6cee3",
+  "Auction prizes" = "#b15928",
+  "Cranborne Money (House of Lords)" = "#33a02c",
+  "Travel" = "#fb9a99",
+  "Hospitality" = "#cab2d6",
+  "Short Money (House of Commons)" = "#fdbf6f",
+  "Assistance for Parties (Scottish Parliament)" = "#ff33cc",
+  "Financial Assistance for Parties in NI Assembly" = "#b2df8a",
+  "Premises" = "#a1d99b",
+  "Other Payment" = "#1f78b4",
+  "Other" = "#ffff99"
+)
 
 nature_p <- ggplot(donor_status_percent, aes(x = DonorStatus, y = Percentage, fill = NatureOfDonation, text = HoverText)) +
   geom_bar(stat = "identity", position = "fill") +
