@@ -1,9 +1,77 @@
 ---
-title: "Projects"
+title: "Candidate Names"
 ---
 
-## Project 1
+### Creating a new csv file with a tally for each time the name occurs in the data
 
-## Project 2
+```{r}
 
-## Project 3
+library(tidyverse)
+
+#Data source: democracy club, candidate list, released 07/06/2024
+
+name <- read.csv("candidate_name/candidate_GE24.csv")
+
+```
+
+```{r}
+
+#replace captain beany with name
+
+name$person_name <- sub("Captain Beany", "Barry Kirk", name$person_name, fixed = TRUE)
+
+name$person_name <- sub("The Zok", "Zoran Zoc", name$person_name, fixed = TRUE)
+
+#tally first names
+
+first_name_tally <- name %>%
+  mutate(cleaned_names = gsub("Sir |Lord |Doctor |Dr |M. ", "", person_name)) %>% 
+  mutate(first_name = sub(" .*", "", cleaned_names)) %>%  
+  count(first_name, sort = TRUE)  
+
+#create a new column with all lower case
+
+first_name_tally <- first_name_tally %>%
+  mutate(name_lower = tolower(first_name))
+
+#some anomalies: monster raving loony party, AI steve
+
+```
+
+```{r}
+
+ian_tally <- name %>%
+  filter(grepl("^Bridget ", person_name)) %>%  
+  group_by(party_name) %>%  # Group by party_name
+  summarise(count = n())  # Count occurrences
+
+
+# split up first name and last name into new column
+
+name <- name %>%
+  select(person_name, party_name, post_label) %>%
+  mutate(cleaned_names = gsub("Sir |Lord |Doctor |Dr |M. ", "", person_name)) %>% 
+  mutate(first_name = sub(" .*", "", cleaned_names),
+         last_name = str_extract(cleaned_names, "\\w+$")) %>%
+  select(person_name, first_name, last_name, party_name, post_label)
+
+# Combine Labour and the cooperative party into 1
+
+
+# male names added
+
+male_names <- c("David", "John", "Paul", "James", "Mark", "Andrew", "Richard", "Michael", "Ian", "Stephen", "Steve", "Peter", "Simon", "Robert", "Tom", "Ben", "Jonathan", "Andy", "Matthew", "Mike", "Martin", "Neil", "Tony", "Dan", "Daniel", "Christopher", "Jack", "Matt", "Tim", "Adam", "Graham", "Alan", "Craig", "Luke", "Edward", "Gary", "Nigel", "Gareth", "Darren", "Scott", "Stuart", "Thomas", "Oliver", "Rob", "Bill", "Jason", "Kevin", "Nicholas", "Dave", "George", "Jim", "Josh", "Keith", "Mohammed", "Barry", "Jeremy", "Brian", "Charles", "Colin", "Philip", "Alexander", "Anthony", "Bob", "Ed", "Guy", "Henry", "Pete", "Phil", "Roger", "Will", "William", "Jon", "Liam", "Patrick", "Stewart", "Shaun", "Trevor", "Alastair", "Dominic", "Frank", "Gavin", "Iain", "Jacob", "Jake", "Jeff", "Karl", "Malcolm", "Steven", "Adrian", "Damian", "Joshua", "Khalid", "Kieran", "Marcus", "Alistair", "Callum", "Carl", "Clive", "Declan", "Donald", "Duncan", "Gordon", "Grant", "Greg", "Hamish", "Harry", "Lewis", "Martyn", "Owen", "Samuel", "Tommy", "Benjamin", "Brandon", "Brendan", "Connor", "Derek", "Geoff", "Gregory", "Joseph", "Marc", "Raj", "Toby", "Abdul", "Arnold", "Bernard", "Bradley", "Douglas", "Dylan", "Eddie", "Freddie", "Garry", "Glen", "Imran", "Johnny", "Justin", "Keir", "Kenneth", "Laurence", "Leo", "Mick", "Muhammad", "Nathan", "Niall", "Robbie", "Rupert", "Timothy", "Amir", "Angus", "Antonio", "Arthur", "Bobby", "Brent", "Brett", "Conor", "Conrad", "Damien", "Darryl", "Dean", "Desmond", "Doug", "Earl", "Edmund", "Edwin", "Eric", "Ethan", "Geoffrey", "Gerald", "Glenn", "Grahame", "Howard", "Hugo", "Joel", "Jordan", "Ken", "Khalil", "Kieron", "Kyle", "Lawrence", "Louie", "Mathew", "Mohamed", "Mohammad", "Muhammed", "Naveed", "Norman", "Oscar", "Phillip", "Raymond", "Rich", "Rod", "Ron", "Roy", "Russ", "Seamus", "Sebastian", "Shane", "Theo", "Victor", "Wayne", "Wesley", "Ahmed", "Aidan", "Alasdair", "Alberto", "Alfred", "A.", "AI", "Aadil", "Abbas", "Abdoul", "Abdulla", "Abul", "Ade", "Adedotun", "Afzal", "Ahmet", "Ahsan", "Ajaz", "Ajmal", "Akeel", "Akhlaque", "Akhmed", "Al", "Aled", "Alexi", "AliRom", "Allister", "Altaf", "Alun", "Alyn", "Ameet", "Amjad", "Ammar", "Amrit", "Andre", "Andrei", "Anil", "Anwarul", "Archibald", "Arnie", "Arran", "Arron", "Asa", "Ashvir", "Athar", "Atif", "Attic", "Attiq", "Aubrey", "Audel", "Augustine", "Austin", "Ayoub", "Azhar", "Azmat", "Babar", "Baggy", "Bambos", "Barmy", "Barney", "Baron", "Bart", "Bastôn", "Bayo", "Benedict", "Benet", "Bim", "Blair", "Blaise", "Blake", "Brad", "Brenden", "Bret", "Brook", "Bruce", "Byron", "Cade", "Cahal", "Calum", "Calvin", "Cam", "Carlo", "Carne", "Cas", "Cathal", "Caz", "Chan", "Charith", "Chas", "Chaz", "Ciaran", "Citizen", "Clayton", "Cliff", "Cole", "Collan", "Colum", "Count", "Cris", "Crispian", "Dafydd", "Dai", "Dale", "Damon", "Darshan", "Daud")
+
+female_names <- c("Sarah", "Helen", "Catherine", "Rachel", "Emma", "Claire", "Caroline", "Kate", "Laura", "Rebecca", "Lucy", "Amanda", "Jane", "Anna", "Hannah", "Julie", "Ruth", "Elizabeth", "Louise", "Karen", "Alison", "Angela", "Anne", "Jennifer", "Liz", "Maria", "Emily", "Joanna", "Lisa", "Sally", "Charlotte", "Christine", "Clare", "Debbie", "Julia", "Mary", "Susan", "Ann", "Jan", "Kim", "Lauren", "Pippa", "Rosie", "Vicky", "Victoria", "Wendy", "Cat", "Diana", "Elaine", "Fiona", "Jessica", "Katherine", "Katie", "Linda", "Lorraine", "Lynn", "Maureen", "Melanie", "Natalie", "Alexandra", "Amy", "Andrea", "Becca", "Carol", "Dawn", "Denise", "Ellie", "Gillian", "Heather", "Hilary", "Jayne", "Jill", "Kelly", "Lorna", "Michelle", "Pamela", "Patricia", "Samantha", "Sandra", "Sara","Sophie", "Sue", "Teresa", "Vanessa", "Yvonne", "Alice", "Amelia", "Angie", "Bridget", "Carla", "Christina", "Donna", "Georgie", "Helena", "Holly", "Jackie", "Jade", "Janet", "Janice", "Jenny", "Joy", "Katharine", "Kirsty", "Lara", "Margaret", "Marie", "Maxine", "Nadia", "Nancy", "Natasha", "Nicola", "Pauline", "Rachael", "Stephanie", "Vicki", "Yasmin", "Aisha", "Anita", "Anne-Marie", "Anneliese", "Annie", "Becky", "Caitlin", "Cara", "Carolyn", "Celia", "Christie", "Danielle", "Deborah", "Deirdre", "Diane", "Eleanor", "Erin", "Esther", "Eva", "Fay", "Fionna", "Gemma", "Georgia", "Georgina", "Gina", "Gloria", "Harriet", "Hazel", "Imogen", "Irene", "Isobel", "Izzy", "Jacqueline", "Jemma", "Jen", "Judith", "Judy", "June", "Kathleen", "Kathryn", "Kayleigh", "Kiera", "Leanne", "Lizzie", "Lois", "Lyn", "Lynda", "Maggie", "Marianne", "Maya", "Mona", "Monica", "Olivia", "Paula", "Penelope", "Penny", "Phoebe", "Rowena", "Sharon", "Sheila", "Shona", "Siobhan", "Sonia", "Sophia", "Stella", "Suzanne", "Tessa", "Thérèse", "Zoe", "Aarti", "Abigail", "Adele", "Alicia", "Alixandra", "Allison", "Aasha", "Aasiya", "Abena", "Abi", "Abtisam", "Adria", "Aheesha", "Aishat", "Albati", "Amie", "Ammi", "Ange", "Angeliki", "Ani", "Anja", "Anna-Maria", "Annaliese", "Annette", "Antoinette", "Antonia", "Anum", "Aphra", "April", "Apsana", "Aroma", "Aruhan", "Asha", "Ayesha", "Barbara", "Beatrice", "Beccy", "Bell", "Bella", "Bernadette", "Beth", "Bianca", "Brenda", "Cadewyn", "Caitriona", "Candice", "Carissma", "Carline", "Carolyne", "Carolynn", "Caron", "Cassi", "Cassie", "Cate", "Cath", "Cathy", "Chantal", "Charley", "Charmaine", "Chelsea", "Chelsey", "Cheney", "Cherilyn", "Cheryl", "Cheryl-Ann", "Chi", "Chika", "Chipiliro", "Chloe", "Chloe-Jane", "Chloe-Louise", "Chrishni", "Clareine", "Claudia", "Colette", "Cordelia", "Corinthia", "Corri", "Daisy", "Damola", "Danni", "Danuta", )
+
+other <- c("A.N.ON", "Adie", "Akshay", "Amer", "Anni", "Athol", "Aysha", "Baz", "Bex", "Bharatkumar", "Binka")
+
+
+#unisex names ordered separately
+
+
+#adding in the YouGov poll of most likely to get the seat
+
+
+```
+
