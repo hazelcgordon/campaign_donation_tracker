@@ -38,10 +38,18 @@ first_name_tally <- first_name_tally %>%
 
 ```
 
+### Assigning names: method
+
+The following method was used to assign gender to names. After the full candidate list had been downloaded from the Democracy Club, a tally of names were summarised to create a list of 1,374 unique names. Lists were created to match gender to names. Clearly gendered names such as 'David' and 'Sarah' were automatically put into their corresponding list. Gender-neutral names were left out to be checked on a case by case basis.
+
+However, once the list of 1,374 names had reached the point where only one instance of each name occurred, the names were checked on a case by case basis and assigned to the corresponding list along with the gendered names. So, for example, although 'Rory' and 'Robyn' are gender neutral names, they appear in the male or female name lists as only one candidate had this name and their gender was verified specifically. To check, names were google searched to find a picture and ideally a pronoun reference to the candidate (in, say, a journal article about them) to verify their gender. If their gender was unverifiable, or it appeared they did not identify with the gender binary, they were placed into a separate list.
+
+This is not a perfect method, and aimed only at achieving a general sense of proportions between men and women candidates within each party. Mistakes may have been made in individual cases.
+
 ```{r}
 
 name_tally <- name %>%
-  filter(grepl("^Bridget ", person_name)) %>%  
+  filter(grepl("^Hilda ", person_name)) %>%  
   group_by(party_name) %>%  # Group by party_name
   summarise(count = n())  # Count occurrences
 
@@ -70,7 +78,7 @@ male_names4 <- c("Aled", "Alexi", "AliRom", "Allister", "Altaf", "Alun", "Alyn",
 
 male_names5 <- c("Frederick", "Gagan", "Garreth", "Ged", "Gerard", "Gez", "Ghazi", "Giane", "Gideon", "Giles", "Giuseppe", "Glyn", "Gregor", "Grumpus", "Gulvinder", "Gurinder", "Gus", "Gwenton", "Gwyn", "Habib", "Hamilton", "Hans", "Harbant", "Hari", "Haroun", "Harrison", "Hassan", "Heiko", "Helmi", "Hersh", "Hoo-Ray", "Horatio", "Howling", "Huge", "Iconic", "Iddrisu", "Ieuan", "Iftikhar", "Imad", "Imtiaz", "Ioan", "Iolo", "Iqbal", "Irakli", "Irfan", "Irwen", "Isaac", "Ishtiaq", "Issan", "Ivan", "Jackson", "Jag", "Jaginder", "Jahir", "Jamal", "Jamie-Lee", "Janus", "Javed", "Jed", "Jeevun", "Jeffrey", "Jehad", "Jenner", "Jerome", "Jerry", "Jesse", "Job", "Jody", "Johnathan", "Johno", "Jonathon", "Jonny", "Josiah", "Jovan", "Kabeer", "Kaine", "Kamel", "Kamran", "Kane", "Kanishka", "Kashif", "Kayode", "Kaz", "Kefentse", "Keiron", "Kelvin", "Ketankumar", "Kevan", "Khandu", "Kieren", "King", "Kiran", "Kit", "Knigel", "Korin", "Kuldev", "Kwaku", "Kyn", "Lalit", "Lance", "Larry", "Lars", "Laurent", "Laurie", "Lenny", "Leslie", "Lester", "Lincoln", "Lionel", "Lloyd", "Lorenzo", "Louis", "Lucas", "Lucian", "Luigi", "Lynden", "Maciej", "Mal", "Malachy", "Mamun", "Manny", "Manu", "Maqsood", "Marco", "Markus", "Mattie", "Matty", "Maurice", "Maxwell", "Mayuran", "Mehmood", "Merv", "Mian", "Michal", "Miles", "Minhajul", "Mitchell", "Mocky", "Mohhamed", "Monty", "Moui-Tabrizy", "Mustafa", "Mustaque", "Muzafar", "Myles", "Nagarjun", "Nagender", "Nahim", "Najmul", "Narinder", "Nasri", "Navdeep", "Navendu", "Navid", "Neale", "Neill", "Neville", "Niel", "Nimal", "Nisar", "Nizam", "Noah", "Nurul", "Obi", "Olivio", "Olli", "Ollie", "Olusola", "Omar")
 
-male_names6 <- c("Osman", "Otto", "Owain", "Owais", "Paco", "Padraic", "Parham", "Parmjit", "Pedro", "Pelé", "Perran", "Pierce", "Piers", "Prabhdeep", "Prad", "Praful", "Primesh")
+male_names6 <- c("Osman", "Otto", "Owain", "Owais", "Paco", "Padraic", "Parham", "Parmjit", "Pedro", "Pelé", "Perran", "Pierce", "Piers", "Prabhdeep", "Prad", "Praful", "Primesh", "Priyank", "Psychobilly", "Qazi", "Rahoul", "Raja", "Rajesh", "Rajiv", "Ralph", "Ranil", "Ravaldeep", "Ravi", "Reginald", "Rehman", "Reza", "Rhodri", "Riad", "Rio", "Rishi", "Rizvi", "Roberto", "Roderick", "Rodney", "Roh", "Ronnie", "Rory", "Rowland", "Ruairi", "Ruraidh", "Ryk", "Saba", "Sadat", "Saiham", "Samsuzzaman", "Sandesh", "Saqib", "Sarajulhaq", "Satbir", "Sathish", "Sayeed", "Senthil", "Seyi", "Shafaei", "Shafat", "Shaffaq", "Shailesh", "Shakeel", "Shakir", "Sham", "Shangara", "Shasha", "Shaz", "Shazu", "Sheikh", "Sherief", "Shesh", "Shockat", "Sid", "Sidney", "Sojan", "Somon", "Spencer", "Stan", "Stanley", "Steffan", "Stevan", "Steward", "Sukhinder", "Suneil", "Surjit", "Sushil", "Séamas", "Tad", "Talat", "Tam", "Tan", "Tarek", "Tarik", "Tariq", "Tarun", "Tasos", "Tauqeer", "Tayab", "Teck", "Ted", "Theodore", "Thom", "Tiger", "Titus", "Tobias", "Tobie", "Todd", "Toqueer", "Torcuil", "Torsten", "Tosh", "Tristram")
 
 #FEMALE
 
@@ -80,11 +88,13 @@ female_names2 <- c("Cara", "Carolyn", "Celia", "Christie", "Danielle", "Deborah"
 
 female_names3 <- c("Eunice", "Evelyn", "Faiza", "Farzana", "Faten", "Faye", "Felicity", "Fennie", "Feryal", "Fleur", "Flick", "Flo", "Florence", "Francesca", "Francoise", "Freya", "Gabrielle", "Gail", "Gayathri", "Gemma-Jane", "Gen", "Geraldine", "Gerri", "Giovanna", "Gurpreet", "Hajira", "Halima", "Hanna", "Harpreet", "Harriett", "Hayley", "Heidi", "Hema", "Hillary", "Hina", "Holly-Mae", "Irenea", "Isabel", "Isabella", "Isabelle", "Issy", "Ivana", "Jabu", "Jacqui", "Jamila", "Janey", "Jaswinder", "Javeria", "Jeannine", "Jenifer", "Jessie", "Jilleane", "Joan", "Joani", "Joanne", "Jodie", "Johanna", "Josie", "Ju", "Juliet", "Justine", "Kamala", "Kamla", "Karin", "Kathrine", "Kathy", "Katrina", "Katy", "Kelda", "Kellie-Jay", "Kemi", "Khalila", "Khobi", "Kirith", "Kirsteen", "Kirsten", "Kristy", "Kulsum", "Lady", "Laura-Beth", "Laura-Louise", "Layla", "Leena", "Leila", "Lex", "Leyla", "Leza", "Lia", "Lilian", "Lillian", "Linsey", "Lizzi", "Llinos", "Lola", "Lynne", "Maahwish", "Maddison", "Magdaline", "Mahtab", "Malihah", "Manda", "Mandy", "Manuela", "Marian", "Marianna", "Marie-Clair", "Marilyn", "Marion", "Marisa", "Marsha", "Martha", "Maryse", "Mehmoona", "Mehreen", "Mhairi", "Miatta", "Mims", "Miranda", "Miriam", "Moira", "Momtaz", "Moni", "Morgan", "Munira", "Muryam", "Nada", "Nanda", "Nandita", "Naomi", "Naranee", "Nariese", "Natalia", "Nataly", "Nathalie", "Naushabah", "Neena", "Nesil", "Netty", "Nia", "Niamh", "Nicky", "Nida", "Noor", "Nora", "Nuala", "Nupur", "Nus")
 
-female_names4 <- c("Oana", "Onike", "Oyebola", "Pallavi", "Pam", "Paras", "Paulette", "Pavitar", "Peggy", "Perveen", "Petra", "Philippa", "Pinder", "Polly", "Poppy", "Preet", "Priti")
+female_names4 <- c("Oana", "Onike", "Oyebola", "Pallavi", "Pam", "Paras", "Paulette", "Pavitar", "Peggy", "Perveen", "Petra", "Philippa", "Pinder", "Polly", "Poppy", "Preet", "Priti", "Rabina", "Reetendra", "Rehiana", "Reva", "Rhea", "Rhiannon", "Ria", "Rizwana", "Robyn", "Rochelle", "Roisin", "Rosalind", "Rosalinda", "Rose", "Rosemary", "Rosena", "Rosey", "Roxanne", "Roz", "Ruby", "Rufia", "Rumi", "Rupa", "Rushanara", "Ráichéal", "Sabah", "Sabeena", "Sabi", "Sabira", "Saj", "Sally-Ann", "Sameera", "Samia", "Sangeet", "Sanjana", "Sasjkia", "Saskia", "Satvir", "Scarlett", "Seema", "Selaine", "Seonaid", "Serena", "Shabana", "Shaghofta", "Shakeela", "Shama", "Shan", "Shanaz", "Shanell", "Shannon", "Sharifah", "Sharmen", "Shazna", "Sheridan", "Sherrie", "Sheryll", "Shivani", "Shâo-Lan", "Sian", "Signe", "Simita", "Simran", "Siobhain", "Siobhán", "Siân", "Smita", "Sonya", "Sorcha-Lucy", "Stacy", "Stefanie", "Steph", "Stephani", "Suella", "Sureena", "Sushila", "Syeda", "Sylvia", "Taghrid", "Taiwo", "Talia", "Tania", "Tanushka", "Tanya", "Tara", "Tara-Jane", "Te", "Thalia", "Thangam", "Thea", "Theresa", "Thirza", "Tilly", "Tina", "Tonia", "Tor", "Tulip")
 
-non_binary <- c()
+#OTHER
 
-other <- c("A.N.ON", "Adie", "Akshay", "Amer", "Anni", "Athol", "Aysha", "Baz", "Bex", "Bharatkumar", "Binka", "Dee", "Gwen", "Harl", "Hoz", "Kombat", "Mariatu", "Morven", "Mykel", "Nagbea")
+non_binary <- c("RJ", "Athol")
+
+other <- c("A.N.ON", "Adie", "Akshay", "Amer", "Anni", "Aysha", "Baz", "Bex", "Bharatkumar", "Binka", "Dee", "Gwen", "Harl", "Hoz", "Kombat", "Mariatu", "Morven", "Mykel", "Nagbea", "Rayyan", "Sandy", "Shaukat", "Si", "Tamas", "Taukir")
 
 #matching the names 
 
