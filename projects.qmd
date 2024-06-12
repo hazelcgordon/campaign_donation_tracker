@@ -78,7 +78,7 @@ male_names4 <- c("Aled", "Alexi", "AliRom", "Allister", "Altaf", "Alun", "Alyn",
 
 male_names5 <- c("Frederick", "Gagan", "Garreth", "Ged", "Gerard", "Gez", "Ghazi", "Giane", "Gideon", "Giles", "Giuseppe", "Glyn", "Gregor", "Grumpus", "Gulvinder", "Gurinder", "Gus", "Gwenton", "Gwyn", "Habib", "Hamilton", "Hans", "Harbant", "Hari", "Haroun", "Harrison", "Hassan", "Heiko", "Helmi", "Hersh", "Hoo-Ray", "Horatio", "Howling", "Huge", "Iconic", "Iddrisu", "Ieuan", "Iftikhar", "Imad", "Imtiaz", "Ioan", "Iolo", "Iqbal", "Irakli", "Irfan", "Irwen", "Isaac", "Ishtiaq", "Issan", "Ivan", "Jackson", "Jag", "Jaginder", "Jahir", "Jamal", "Jamie-Lee", "Janus", "Javed", "Jed", "Jeevun", "Jeffrey", "Jehad", "Jenner", "Jerome", "Jerry", "Jesse", "Job", "Jody", "Johnathan", "Johno", "Jonathon", "Jonny", "Josiah", "Jovan", "Kabeer", "Kaine", "Kamel", "Kamran", "Kane", "Kanishka", "Kashif", "Kayode", "Kaz", "Kefentse", "Keiron", "Kelvin", "Ketankumar", "Kevan", "Khandu", "Kieren", "King", "Kiran", "Kit", "Knigel", "Korin", "Kuldev", "Kwaku", "Kyn", "Lalit", "Lance", "Larry", "Lars", "Laurent", "Laurie", "Lenny", "Leslie", "Lester", "Lincoln", "Lionel", "Lloyd", "Lorenzo", "Louis", "Lucas", "Lucian", "Luigi", "Lynden", "Maciej", "Mal", "Malachy", "Mamun", "Manny", "Manu", "Maqsood", "Marco", "Markus", "Mattie", "Matty", "Maurice", "Maxwell", "Mayuran", "Mehmood", "Merv", "Mian", "Michal", "Miles", "Minhajul", "Mitchell", "Mocky", "Mohhamed", "Monty", "Moui-Tabrizy", "Mustafa", "Mustaque", "Muzafar", "Myles", "Nagarjun", "Nagender", "Nahim", "Najmul", "Narinder", "Nasri", "Navdeep", "Navendu", "Navid", "Neale", "Neill", "Neville", "Niel", "Nimal", "Nisar", "Nizam", "Noah", "Nurul", "Obi", "Olivio", "Olli", "Ollie", "Olusola", "Omar")
 
-male_names6 <- c("Osman", "Otto", "Owain", "Owais", "Paco", "Padraic", "Parham", "Parmjit", "Pedro", "Pelé", "Perran", "Pierce", "Piers", "Prabhdeep", "Prad", "Praful", "Primesh", "Priyank", "Psychobilly", "Qazi", "Rahoul", "Raja", "Rajesh", "Rajiv", "Ralph", "Ranil", "Ravaldeep", "Ravi", "Reginald", "Rehman", "Reza", "Rhodri", "Riad", "Rio", "Rishi", "Rizvi", "Roberto", "Roderick", "Rodney", "Roh", "Ronnie", "Rory", "Rowland", "Ruairi", "Ruraidh", "Ryk", "Saba", "Sadat", "Saiham", "Samsuzzaman", "Sandesh", "Saqib", "Sarajulhaq", "Satbir", "Sathish", "Sayeed", "Senthil", "Seyi", "Shafaei", "Shafat", "Shaffaq", "Shailesh", "Shakeel", "Shakir", "Sham", "Shangara", "Shasha", "Shaz", "Shazu", "Sheikh", "Sherief", "Shesh", "Shockat", "Sid", "Sidney", "Sojan", "Somon", "Spencer", "Stan", "Stanley", "Steffan", "Stevan", "Steward", "Sukhinder", "Suneil", "Surjit", "Sushil", "Séamas", "Tad", "Talat", "Tam", "Tan", "Tarek", "Tarik", "Tariq", "Tarun", "Tasos", "Tauqeer", "Tayab", "Teck", "Ted", "Theodore", "Thom", "Tiger", "Titus", "Tobias", "Tobie", "Todd", "Toqueer", "Torcuil", "Torsten", "Tosh", "Tristram", "Uday", "Udo", "Ukonu", "Ulysse", "Umair", "Umar", "Vinay", "Vinayak", "Vipul", "Vivek", "Vusi", "Wael", "Waheed", "Wais", "Wajad", "Wajahat", "Warinder", "Waseem", "Wes", "Wil", "Wing", "Wisdom", "Yas", "Yasin", "Yemi", "Yoel", "Yousaff", "Yousef", "Yousuf", "Zack", "Zaf", "Zaffar", "Zafran", "Zaid", "Zain", "Zak", "Zbigniew", "Zen", "Zhafaran", "Zohaib", "Zoran", "Zubir", "Zuffar", "Zulfikar")
+male_names6 <- c("Osman", "Otto", "Owain", "Owais", "Paco", "Padraic", "Parham", "Parmjit", "Pedro", "Pelé", "Perran", "Pierce", "Piers", "Prabhdeep", "Prad", "Praful", "Primesh", "Priyank", "Psychobilly", "Qazi", "Rahoul", "Raja", "Rajesh", "Rajiv", "Ralph", "Ranil", "Ravaldeep", "Ravi", "Reginald", "Rehman", "Reza", "Rhodri", "Riad", "Rio", "Rishi", "Rizvi", "Roberto", "Roderick", "Rodney", "Roh", "Ronnie", "Rory", "Rowland", "Ruairi", "Ruraidh", "Ryk", "Saba", "Sadat", "Saiham", "Samsuzzaman", "Sandesh", "Saqib", "Sarajulhaq", "Satbir", "Sathish", "Sayeed", "Senthil", "Seyi", "Shafaei", "Shafat", "Shaffaq", "Shailesh", "Shakeel", "Shakir", "Sham", "Shangara", "Shasha", "Shaz", "Shazu", "Sheikh", "Sherief", "Shesh", "Shockat", "Sid", "Sidney", "Sojan", "Somon", "Spencer", "Stan", "Stanley", "Steffan", "Stevan", "Steward", "Sukhinder", "Suneil", "Surjit", "Sushil", "Séamas", "Tad", "Talat", "Tam", "Tan", "Tarek", "Tarik", "Tariq", "Tarun", "Tasos", "Tauqeer", "Tayab", "Teck", "Ted", "Theodore", "Thom", "Tiger", "Titus", "Tobias", "Tobie", "Todd", "Toqueer", "Torcuil", "Torsten", "Tosh", "Tristram", "Uday", "Udo", "Ukonu", "Ulysse", "Umair", "Umar", "Vinay", "Vinayak", "Vipul", "Vivek", "Vusi", "Wael", "Waheed", "Wais", "Wajad", "Wajahat", "Warinder", "Waseem", "Wes", "Wil", "Wing", "Wisdom", "Yas", "Yasin", "Yemi", "Yoel", "Yousaff", "Yousef", "Yousuf", "Zack", "Zaf", "Zaffar", "Zafran", "Zaid", "Zain", "Zak", "Zbigniew", "Zen", "Zhafaran", "Zohaib", "Zoran", "Zubir", "Zuffar", "Zulfikar", "Sadik", "Niko", "Adnan", "Hanif", "Amin", "Asif", "Antony", "Sean", "Allan", "Tomos", "Julian", "Alec", "Terence", "Fraser", "Olly", "Leon", "Aftab", "Felix", "Anand", "Ross", "Euan", "Don", "Syed", "Golam", "Vikas", "Elwyn")
 
 #FEMALE
 
@@ -88,7 +88,7 @@ female_names2 <- c("Cara", "Carolyn", "Celia", "Christie", "Danielle", "Deborah"
 
 female_names3 <- c("Eunice", "Evelyn", "Faiza", "Farzana", "Faten", "Faye", "Felicity", "Fennie", "Feryal", "Fleur", "Flick", "Flo", "Florence", "Francesca", "Francoise", "Freya", "Gabrielle", "Gail", "Gayathri", "Gemma-Jane", "Gen", "Geraldine", "Gerri", "Giovanna", "Gurpreet", "Hajira", "Halima", "Hanna", "Harpreet", "Harriett", "Hayley", "Heidi", "Hema", "Hillary", "Hina", "Holly-Mae", "Irenea", "Isabel", "Isabella", "Isabelle", "Issy", "Ivana", "Jabu", "Jacqui", "Jamila", "Janey", "Jaswinder", "Javeria", "Jeannine", "Jenifer", "Jessie", "Jilleane", "Joan", "Joani", "Joanne", "Jodie", "Johanna", "Josie", "Ju", "Juliet", "Justine", "Kamala", "Kamla", "Karin", "Kathrine", "Kathy", "Katrina", "Katy", "Kelda", "Kellie-Jay", "Kemi", "Khalila", "Khobi", "Kirith", "Kirsteen", "Kirsten", "Kristy", "Kulsum", "Lady", "Laura-Beth", "Laura-Louise", "Layla", "Leena", "Leila", "Lex", "Leyla", "Leza", "Lia", "Lilian", "Lillian", "Linsey", "Lizzi", "Llinos", "Lola", "Lynne", "Maahwish", "Maddison", "Magdaline", "Mahtab", "Malihah", "Manda", "Mandy", "Manuela", "Marian", "Marianna", "Marie-Clair", "Marilyn", "Marion", "Marisa", "Marsha", "Martha", "Maryse", "Mehmoona", "Mehreen", "Mhairi", "Miatta", "Mims", "Miranda", "Miriam", "Moira", "Momtaz", "Moni", "Morgan", "Munira", "Muryam", "Nada", "Nanda", "Nandita", "Naomi", "Naranee", "Nariese", "Natalia", "Nataly", "Nathalie", "Naushabah", "Neena", "Nesil", "Netty", "Nia", "Niamh", "Nicky", "Nida", "Noor", "Nora", "Nuala", "Nupur", "Nus")
 
-female_names4 <- c("Oana", "Onike", "Oyebola", "Pallavi", "Pam", "Paras", "Paulette", "Pavitar", "Peggy", "Perveen", "Petra", "Philippa", "Pinder", "Polly", "Poppy", "Preet", "Priti", "Rabina", "Reetendra", "Rehiana", "Reva", "Rhea", "Rhiannon", "Ria", "Rizwana", "Robyn", "Rochelle", "Roisin", "Rosalind", "Rosalinda", "Rose", "Rosemary", "Rosena", "Rosey", "Roxanne", "Roz", "Ruby", "Rufia", "Rumi", "Rupa", "Rushanara", "Ráichéal", "Sabah", "Sabeena", "Sabi", "Sabira", "Saj", "Sally-Ann", "Sameera", "Samia", "Sangeet", "Sanjana", "Sasjkia", "Saskia", "Satvir", "Scarlett", "Seema", "Selaine", "Seonaid", "Serena", "Shabana", "Shaghofta", "Shakeela", "Shama", "Shan", "Shanaz", "Shanell", "Shannon", "Sharifah", "Sharmen", "Shazna", "Sheridan", "Sherrie", "Sheryll", "Shivani", "Shâo-Lan", "Sian", "Signe", "Simita", "Simran", "Siobhain", "Siobhán", "Siân", "Smita", "Sonya", "Sorcha-Lucy", "Stacy", "Stefanie", "Steph", "Stephani", "Suella", "Sureena", "Sushila", "Syeda", "Sylvia", "Taghrid", "Taiwo", "Talia", "Tania", "Tanushka", "Tanya", "Tara", "Tara-Jane", "Te", "Thalia", "Thangam", "Thea", "Theresa", "Thirza", "Tilly", "Tina", "Tonia", "Tor", "Tulip", "Uma", "Una", "Veronica", "Vikki", "Virginia", "Vivien", "Vivienne", "Vix", "Wera", "Yolande", "Yuan", "Yvette", "Zara", "Zarah", "Zarmeena", "Zebunisa", "Zia", "Zoë", "Zöe", "Áine", "Órfhlaith")
+female_names4 <- c("Oana", "Onike", "Oyebola", "Pallavi", "Pam", "Paras", "Paulette", "Pavitar", "Peggy", "Perveen", "Petra", "Philippa", "Pinder", "Polly", "Poppy", "Preet", "Priti", "Rabina", "Reetendra", "Rehiana", "Reva", "Rhea", "Rhiannon", "Ria", "Rizwana", "Robyn", "Rochelle", "Roisin", "Rosalind", "Rosalinda", "Rose", "Rosemary", "Rosena", "Rosey", "Roxanne", "Roz", "Ruby", "Rufia", "Rumi", "Rupa", "Rushanara", "Ráichéal", "Sabah", "Sabeena", "Sabi", "Sabira", "Saj", "Sally-Ann", "Sameera", "Samia", "Sangeet", "Sanjana", "Sasjkia", "Saskia", "Satvir", "Scarlett", "Seema", "Selaine", "Seonaid", "Serena", "Shabana", "Shaghofta", "Shakeela", "Shama", "Shan", "Shanaz", "Shanell", "Shannon", "Sharifah", "Sharmen", "Shazna", "Sheridan", "Sherrie", "Sheryll", "Shivani", "Shâo-Lan", "Sian", "Signe", "Simita", "Simran", "Siobhain", "Siobhán", "Siân", "Smita", "Sonya", "Sorcha-Lucy", "Stacy", "Stefanie", "Steph", "Stephani", "Suella", "Sureena", "Sushila", "Syeda", "Sylvia", "Taghrid", "Taiwo", "Talia", "Tania", "Tanushka", "Tanya", "Tara", "Tara-Jane", "Te", "Thalia", "Thangam", "Thea", "Theresa", "Thirza", "Tilly", "Tina", "Tonia", "Tor", "Tulip", "Uma", "Una", "Veronica", "Vikki", "Virginia", "Vivien", "Vivienne", "Vix", "Wera", "Yolande", "Yuan", "Yvette", "Zara", "Zarah", "Zarmeena", "Zebunisa", "Zia", "Zoë", "Zöe", "Áine", "Órfhlaith", "Catrin", "Jess", "Iris")
 
 #below are possibly non-binary, but it is difficult to verify this with confidence
 
@@ -102,25 +102,47 @@ other <- c("A.N.ON", "Adie", "Akshay", "Amer", "Anni", "Baz", "Bex", "Bharatkuma
 
 gender_check <- name %>%
   mutate(gender = case_when(
-    first_name %in% male_names1 ~ "men",
-    first_name %in% male_names2 ~ "men",
-    first_name %in% male_names3 ~ "men",
-    first_name %in% male_names4 ~ "men",
-    first_name %in% male_names5 ~ "men",
-    first_name %in% male_names6 ~ "men",
-    first_name %in% female_names1 ~ "women",
-    first_name %in% female_names2 ~ "women",
-    first_name %in% female_names3 ~ "women",
-    first_name %in% female_names4 ~ "women",
+    first_name %in% male_names1 ~ "man",
+    first_name %in% male_names2 ~ "man",
+    first_name %in% male_names3 ~ "man",
+    first_name %in% male_names4 ~ "man",
+    first_name %in% male_names5 ~ "man",
+    first_name %in% male_names6 ~ "man",
+    first_name %in% female_names1 ~ "woman",
+    first_name %in% female_names2 ~ "woman",
+    first_name %in% female_names3 ~ "woman",
+    first_name %in% female_names4 ~ "woman",
     first_name %in% non_binary ~ "unknown",
     first_name %in% other ~ "unknown",
     TRUE ~ ""
   ))
 
+gender_check <- gender_check %>%
+  select(person_name, first_name, last_name, gender, everything())
 
 #unisex names ordered separately
 
+unisex <- gender_check %>%
+  filter(gender == "")
 
+#FEMALE NEUTRAL NAMES
+
+female_neutral1 <- c("Jo Hart", "Alex Baker", "Lesley Ann Taylor", "Jo White", "Tracy Kelly", "Ash Jones", "Jo Bird", "Gita Gordon", "Ali Griffiths", "Alex Fawbert", "Naz Shah", "Gill Leek", "Valerie Gray", "Kerry McCarthy", "Jai Breitnauer", "Sam Ammar", "Jo Stevens", "Meg Shepherd-Foster", "Tracey Hague", "Gill Westcott", "Kay Lauer", "Gill German", "Kay Wesley", "Lesley Backhouse", "Mags Hall", "Sam Casey-Rerhaye", "Tracey Little", "Alex Mayer", "Tracy Gilbert", "Jo Mowat", "Jo Phillips", "Mel Dawkins", "Pat Cullen", "Lesley Rollings")
+
+#MALE NEUTRAL NAMES
+
+male_neutral1 <- c("Charlie Abel", "Graeme Craib", "Kenny MacAskill", "Alex Stevenson", "Chris Philipsborn", "Lee Anderson", "Lee Alan Huntbach", "Chris Nevile", "Robin Millar", "Alex Harrison", "Ray Saint", "Jamie McNamee", "Francis Chubb", "Joe Taylor", "Ryan North", "Ryan Warren", "Gerry Carroll", "Eóin Millar", "Ray Georgeson", "Reggie Adams", "Chris Collin", "Tahir Ali", "Qasim Mohammed Esak", "Lee Dargue", "Rhys Burriss", "Sam Rushworth", "Jamie McGowan", "Chris Webb", "Nick Smith", "Chris Green", "Joe Salmon", "Alex Burghart", "Robin Tilbrook", "Chris Elmore", "Ashley Fox", "Leigh Redman", "Charlie Dewhirst", "Chris Ward", "Ashley Ridley", "Nick Belfitt", "Ray Brady", "Christian Wakeford", "Chris Evans", "Lindsay Whittle", "Jamie Stone", "Lee Canning", "Sam Coates", "Alex Wilson", "Alex Barros-Curtis", "Elliot Colburn", "Ashley Dickenson", "Mel Stride", "Tristan Osborne", "Alex Chalk", "Max Wilkinson", "Chris Chilton", "Nick Brown", "Chris Brody", "Nic Puntis", "Lindsay Hoyle", "Robin Adamson", "Sasha Jolliffe Yasawi", "Lee Lavery", "Jamie Orange", "Drew Thomas Gilchrist", "Lee Barron", "Lee Forster", "Chris Lofts", "Lee Daniel Gibbs", "Chris Philp", "Billy Ross", "Sam Holland", "Lee Stranders", "Jamie Mulhall", "Joe Naitta", "Sam Ward", "Chris Williamson", "Nick Allen", "Lee Pitcher", "Chris Coghlan", "Ashley James Payne", "Chris Tough", "Sam Bastow", "Chris Law", "Naz Anis-Miah", "Ryan Blackadder", "Graeme Downie", "Danny Smith", "Les Beaumont", "Sam Habeeb", "Joe Bhangu", "Tahir Maher", "Danny Donnelly", "Sammy Wilson", "Tahir Mirza", "Chris Scott", "Jai Singh", "Danny Kruger", "Chris Murray", "Alex Martin", "Cameron Rose", "Nick Hornig", "Lee Evans", "Charlie Davis", "Sam Gabriel", "Christian Hacking", "Ryan Coogan", "Chris Dey", "Lee Bunker", "Toni Giugliano", "Alex Just", "Alex Deane", "Chris McFarling", "Robin Moss", "Pat O'Connor", "Chris Sermanni", "Nick Durie")
+
+# UNKNOWN
+
+unknown_neutral <- c("Terry Robinson", "Jamie Pullin", "Chris Moore", "Jamie Alan Hinton-Wardle", "Charlie Caiger", "Kris Stone", "Chris Baddon", "Robin Burnham", "Gerry Cullen")
+
+# Assign gender based on the name vectors
+gender_check$gender <- ifelse(
+  gender_check$person_name %in% male_neutral1, "man",
+  ifelse(gender_check$person_name %in% female_neutral1, "woman",
+         ifelse(gender_check$person_name %in% unknown_neutral, 
+                                  "unknown", gender_check$gender)))
 
 
 #adding in the YouGov poll of most likely to get the seat
