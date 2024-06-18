@@ -1,8 +1,5 @@
 ---
 title: "Pre-poll 2024"
-format:
-  html:
-    css: styles.css
 ---
 
 ```{r include=FALSE}
@@ -10,10 +7,30 @@ format:
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(gt)
 
 ```
 
-### Totals for pre-poll week 1 2024
+```{r functions, include=FALSE}
+
+# remove blank spaces between £ sign and numbers for better table formatting
+
+remove_spaces <- function(df) {
+  df %>%
+    mutate(across(everything(), ~ gsub("£\\s+", "£", .)))
+}
+
+# change 0's to blank cells
+
+replace_pound_zero <- function(df) {
+  df %>%
+    mutate(across(everything(), ~replace(., . == "£0", "")))
+}
+
+```
+
+
+### Totals: 2024 pre-poll week one
 
 ```{r processing data, include=FALSE}
 
@@ -39,9 +56,14 @@ pp2024$Value <- as.numeric(gsub("[£,\"]", "", pp2024$Value))
 pp2024 <- pp2024 %>%
   select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
 
+# changing names of parties
+
+pp2024$RegulatedEntityName <- gsub("Conservative and Unionist Party", "Conservative Party", pp2024$RegulatedEntityName)
+pp2024$RegulatedEntityName <- gsub("Scottish National Party \\(SNP\\)", "SNP", pp2024$RegulatedEntityName)
+
 #creating factors
 
-pp2024$RegulatedEntityName <- factor(pp2024$RegulatedEntityName, levels = c("Conservative and Unionist Party", "Labour Party", "Liberal Democrats", "Reform UK", "Scottish National Party (SNP)", "Climate Party", "Social Democratic Party"))
+pp2024$RegulatedEntityName <- factor(pp2024$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Climate Party", "Social Democratic Party"))
 
 pp2024$DonorStatus <- factor(pp2024$DonorStatus, levels = c("Individual", "Company", "Trade Union", "Unincorporated Association", "Friendly Society"))
 
@@ -124,14 +146,182 @@ kable(prepoll_table, format = "html", escape = FALSE, table.attr = "style='width
 
 ```
 
-### Comparison with 2019
+### 2019 comparison 
 
-- Comparison with 2019 week 1
-- Comparison with 2019 total period
+#### Totals: week one
 
-```{r}
+```{r include=FALSE}
 
+pp2019 <- read.csv("data2019/alldonations_2019.csv")
+
+# filtering pre-poll week 1
+
+pp2019 <- pp2019 %>%
+  filter(ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019")
+
+# Remove £ sign and convert to numeric
+pp2019$Value <- as.numeric(gsub("[£,\"]", "", pp2019$Value))
+
+# converting names
+
+pp2019$RegulatedEntityName <- gsub("Conservative and Unionist Party", "Conservative Party", pp2019$RegulatedEntityName)
+pp2019$RegulatedEntityName <- gsub("Scottish National Party \\(SNP\\)", "SNP", pp2019$RegulatedEntityName)
+pp2019$RegulatedEntityName <- gsub("Alliance - Alliance Party of Northern Ireland", "Alliance", pp2019$RegulatedEntityName)
+
+#keep only relevant columns
+
+pp2019 <- pp2019 %>%
+  select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
+
+#convert table for 2024 back to characters for factor variables
+
+pp2024$RegulatedEntityName <- as.character(pp2024$RegulatedEntityName)
+pp2024$DonorStatus <- as.character(pp2024$DonorStatus)
+
+#bind the tables together for comparisons
+
+ppw1 <- rbind(pp2019, pp2024)
+
+```
+
+```{r echo=FALSE}
+
+# compare total donated to each party 
+
+#creating factors
+
+ppw1$RegulatedEntityName <- factor(ppw1$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Green Party", "Climate Party", "Social Democratic Party", "Alliance"))
+
+ppw1$DonorStatus <- factor(ppw1$DonorStatus, levels = c("Individual", "Company", "Trade Union", "Unincorporated Association", "Friendly Society"))
+
+ppw1$ReportingPeriodName <- factor(ppw1$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019", "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024"))
+
+# Create a complete data frame with all combinations of Party Name and pre-poll period
+
+pp_comparison <- expand.grid(RegulatedEntityName = 
+                            levels(ppw1$RegulatedEntityName), 
+                         ReportingPeriodName = 
+                           unique(ppw1$ReportingPeriodName)
+                         )
+
+# merge the values with each combo
+
+prepoll_comparison <- pp_comparison %>%
+  left_join(ppw1 %>%
+              group_by(RegulatedEntityName, ReportingPeriodName) %>%
+            summarise(TotalValue = sum(Value, na.rm = TRUE), 
+                      .groups = 'drop'),
+            by = c("RegulatedEntityName", "ReportingPeriodName"))
+
+prepoll_comparison$TotalValue[is.na(prepoll_comparison$TotalValue)] <- 0
+
+#Convert value to money format
+
+prepoll_comparison$TotalValue <- round(prepoll_comparison$TotalValue)
+prepoll_comparison$TotalValue <- sprintf("£%s", format(prepoll_comparison$TotalValue, big.mark = ",", scientific = FALSE))
+
+#convert to a wide format
+
+prepoll_comparison <- prepoll_comparison %>%
+  pivot_wider(names_from = ReportingPeriodName,
+              values_from = TotalValue)
+
+#rename column names
+
+prepoll_comparison <- prepoll_comparison %>%
+  rename(`Week 1 2019` = `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`,
+         `Week 1 2024` = `Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`)
+
+# Calculate column totals
+column_totals <- prepoll_comparison %>%
+  summarise(across(where(is.character), ~ sprintf("£%s", format(sum(as.numeric(gsub("[£,]", "", .))), big.mark = ",", scientific = FALSE)))) %>%
+  mutate(RegulatedEntityName = "Total")
+
+# Bind the totals row to the original table
+prepoll_comparison <- bind_rows(prepoll_comparison, column_totals)
+
+# format table
+
+totals_comparison <- kable(prepoll_comparison, col.names = c("", "2019", "2024")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Week One" = 2)) %>%
+  row_spec(nrow(prepoll_comparison), bold = TRUE, color = "white", background = "black") %>%
+  row_spec(0, align = "center")
+
+```
+
+<div style="width: 70%; margin: auto;">
+
+```{r, results='asis', echo=FALSE}
+
+totals_comparison
+
+```
+
+</div>
+
+#### Split by donor type
+
+```{r echo=FALSE, warning=FALSE}
+
+year_summary <- ppw1 %>%
+  select(RegulatedEntityName, ReportingPeriodName, DonorStatus, Value) %>%
+  group_by(RegulatedEntityName, DonorStatus, ReportingPeriodName) %>%
+  summarise(TotalValue = sum(Value), .groups = 'drop') %>%
+  complete(RegulatedEntityName, DonorStatus, ReportingPeriodName, fill = list(TotalValue = 0))
+
+# Convert value to money format
+year_summary$TotalValue <- round(year_summary$TotalValue)
+year_summary$TotalValue <- sprintf("£%s", format(year_summary$TotalValue, big.mark = ",", scientific = FALSE))
+
+# create wide format 
+
+year_summary_wide <- year_summary %>%
+  pivot_wider(
+    names_from = c(DonorStatus, ReportingPeriodName),
+    values_from = TotalValue,
+    names_sep = "_"
+  )
+
+# Calculate column totals
+
+column_total <- year_summary_wide %>%
+  summarise(across(everything(), ~ sum(as.numeric(gsub("[£,]", "", .)),
+                                       na.rm = TRUE))) %>%
+  mutate(RegulatedEntityName = "Total") %>%
+  mutate(across(-RegulatedEntityName, ~ sprintf("£%s", format(.x, big.mark = ",", scientific = FALSE))))
+
+# remove blank spaces function
+
+year_summary_wide <- remove_spaces(year_summary_wide)
+
+# use replace_pound_zero function to make a neater table
+
+year_summary_wide <- replace_pound_zero(year_summary_wide)
+
+# bind the new row with original dataframe
+
+year_summary_wide <- rbind(year_summary_wide, column_total)
+
+```
+
+```{r echo=FALSE}
+
+# Replace 'unincorporated association' with 'unincorporated<br>association' in the column names
+names(year_summary_wide) <- gsub("Unincorporated Association", "Unincorporated<br>Association", names(year_summary_wide))
+
+# Remove the first column title
+names(year_summary_wide)[1] <- ""
+
+#create kable table
+
+kable(year_summary_wide, col.names = c("", "2019", "2024", "2019", "2024", "2019", "2024", "2019", "2024", "2019", "2024")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
+  add_header_above(c(" " = 1, "Individual" = 2, "Company" = 2, "Trade Union" = 2, "Unincorporated Association" = 2, "Friendly Society" = 2)) %>%
+  row_spec(nrow(year_summary_wide), bold = TRUE, color = "white", background = "black") %>%
+  row_spec(0, align = "center")
 
 
 ```
+
 
