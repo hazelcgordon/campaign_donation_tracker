@@ -150,26 +150,41 @@ ul.task-list li input[type="checkbox"] {
 <li>From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?</li>
 </ul></li>
 </ul>
-<p>The table below only include donations that were classified under ‘Pre-poll party’ for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of ‘Q4 2019’ or just at the time period they were eventually reported.</p>
-<p>I’ll also make a graph showing donations from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.</p>
+<p>The table below only include donations that were classified under ‘Pre-poll party’ for the 6 weeks leading up to the elections, removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of ‘Q4 2019’ or just at the time period they were eventually reported.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
-<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<div class="table-responsive">
+<table class="table table-striped table-hover table-condensed table-sm small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;" data-quarto-table-cell-role="th">RegulatedEntityName</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019</th>
-<th style="text-align: left;" data-quarto-table-cell-role="th">Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019</th>
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="6" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px; font-weight: bold;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+week (pre-poll period 2019 GE)
+</div></th>
+</tr>
+<tr class="odd">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">2</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">3</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">4</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">5</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">6</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Conservative and Unionist Party</td>
+<td style="text-align: left; font-weight: bold;">Conservative Party</td>
 <td style="text-align: left;">£5,673,646</td>
 <td style="text-align: left;">£2,967,000</td>
 <td style="text-align: left;">£3,590,500</td>
@@ -178,7 +193,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£1,392,297</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Labour Party</td>
+<td style="text-align: left; font-weight: bold;">Labour Party</td>
 <td style="text-align: left;">£ 218,500</td>
 <td style="text-align: left;">£3,488,000</td>
 <td style="text-align: left;">£ 521,909</td>
@@ -187,7 +202,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Liberal Democrats</td>
+<td style="text-align: left; font-weight: bold;">Liberal Democrats</td>
 <td style="text-align: left;">£ 275,000</td>
 <td style="text-align: left;">£ 251,000</td>
 <td style="text-align: left;">£ 509,998</td>
@@ -196,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Green Party</td>
+<td style="text-align: left; font-weight: bold;">Green Party</td>
 <td style="text-align: left;">£ 30,000</td>
 <td style="text-align: left;">£ 37,750</td>
 <td style="text-align: left;">£ 100,000</td>
@@ -205,7 +220,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Advance Together [De-registered 01/10/20]</td>
+<td style="text-align: left; font-weight: bold;">Advance Together</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
@@ -214,7 +229,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Reform UK</td>
+<td style="text-align: left; font-weight: bold;">Reform UK</td>
 <td style="text-align: left;">£ 250,000</td>
 <td style="text-align: left;">£2,250,000</td>
 <td style="text-align: left;">£ 0</td>
@@ -223,7 +238,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 50,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Plaid Cymru - The Party of Wales</td>
+<td style="text-align: left; font-weight: bold;">Plaid Cymru</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 70,000</td>
 <td style="text-align: left;">£ 0</td>
@@ -232,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Alliance - Alliance Party of Northern Ireland</td>
+<td style="text-align: left; font-weight: bold;">Alliance</td>
 <td style="text-align: left;">£ 60,000</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 15,000</td>
@@ -241,7 +256,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Scottish National Party (SNP)</td>
+<td style="text-align: left; font-weight: bold;">SNP</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 10,000</td>
 <td style="text-align: left;">£ 0</td>
@@ -250,25 +265,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 14,929</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Sinn Féin</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 14,465</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">Democratic Unionist Party - D.U.P.</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 19,425</td>
-<td style="text-align: left;">£ 0</td>
-<td style="text-align: left;">£ 0</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">Renew</td>
+<td style="text-align: left; font-weight: bold;">Renew</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
@@ -277,7 +274,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">Women's Equality Party</td>
+<td style="text-align: left; font-weight: bold;">Women's Equality Party</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
 <td style="text-align: left;">£ 0</td>
@@ -285,8 +282,18 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">£ 20,000</td>
 <td style="text-align: left;">£ 0</td>
 </tr>
+<tr class="even">
+<td style="text-align: left; font-weight: bold; font-weight: bold; color: white !important; background-color: black !important;">Total</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£6,507,146</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£9,073,750</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£4,737,407</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£4,512,132</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£4,400,448</td>
+<td style="text-align: left; font-weight: bold; color: white !important; background-color: black !important;">£1,457,226</td>
+</tr>
 </tbody>
 </table>
+</div>
 
 
 </div>

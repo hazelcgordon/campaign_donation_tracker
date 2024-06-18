@@ -159,6 +159,11 @@ pp2019 <- read.csv("data2019/alldonations_2019.csv")
 pp2019 <- pp2019 %>%
   filter(ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019")
 
+# remove public funds
+
+pp2019 <- pp2019 %>%
+  filter(!DonorStatus == "Public Fund")
+
 # Remove £ sign and convert to numeric
 pp2019$Value <- as.numeric(gsub("[£,\"]", "", pp2019$Value))
 

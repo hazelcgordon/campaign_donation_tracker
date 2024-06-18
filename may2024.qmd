@@ -43,6 +43,11 @@ central_party <- alldonations2019 %>%
          ReportingPeriodName == "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019"|
          ReportingPeriodName == "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019")
 
+# remove public funds
+
+central_party <- central_party %>%
+  filter(!DonorStatus == "Public Fund")
+
 #keep only relevant columns
 
 central_party <- central_party %>%
@@ -50,15 +55,23 @@ central_party <- central_party %>%
 
 ```
 
-The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections. However, this might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
-
-I'll also make a graph showing donations from each type of donor to each political party with an average for amount spent, for all donations explicitly listed as pre-poll.
+The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections, removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
 
 ```{r include=FALSE}
 
+# shorten names for parties
+
+central_party <- central_party %>%
+  mutate(RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Advance Together [De-registered 01/10/20]"), "Advance Together"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Conservative and Unionist Party"), "Conservative Party"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Plaid Cymru - The Party of Wales"), "Plaid Cymru"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Scottish National Party (SNP)"), "SNP"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Alliance - Alliance Party of Northern Ireland"), "Alliance")
+         )
+
 #set key variables as factors
 
-central_party$RegulatedEntityName <- factor(central_party$RegulatedEntityName, levels = c("Conservative and Unionist Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together [De-registered 01/10/20]", "Reform UK", "Plaid Cymru - The Party of Wales", "Alliance - Alliance Party of Northern Ireland", "Scottish National Party (SNP)", "Sinn Féin", "Democratic Unionist Party - D.U.P.", "Renew", "Women's Equality Party"))
+central_party$RegulatedEntityName <- factor(central_party$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Renew", "Women's Equality Party"))
 
 central_party$DonorStatus <- factor(central_party$DonorStatus, levels = c("Individual", "Trade Union", "Company", "Public Fund", "Unincorporated Association", "Limited Liability Partnership"))
 
@@ -105,19 +118,31 @@ prepoll_table <- prepoll_table %>%
 
 # create a totals column
 
-#prepoll_table <- prepoll_table %>%
-#  mutate(TotalValue = `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`|`Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019`|`Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019`|`Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019`|`Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019`|`Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019`)
+column_totals <- prepoll_table %>%
+  summarise(across(where(is.character), ~ sum(as.numeric(gsub("[£,]", "", .)), na.rm = TRUE))) %>%
+  mutate(RegulatedEntityName = "Total") %>%
+  mutate(across(where(is.numeric), ~ sprintf("£%s", format(.x, big.mark = ",", scientific = FALSE))))
+
+# bind totals column with dataframe
+
+prepoll_table <- rbind(prepoll_table, column_totals)
 
 ```
 
 ```{r echo=FALSE}
 
-#create the table
+# Remove the first column title
+names(prepoll_table)[1] <- ""
 
-prepoll_table <- kable(prepoll_table, "html") %>%
-  kable_styling(full_width = FALSE)
+# Use kable to create a nicely formatted table
+table_time <- kable(prepoll_table, col.names = c("", "1", "2", "3", "4", "5", "6")) %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
+  column_spec(1, bold = TRUE) %>%
+  row_spec(nrow(prepoll_table), bold = TRUE, color = "white", background = "black") %>%
+  add_header_above(c(" " = 1, "week (pre-poll period 2019 GE)" = ncol(prepoll_table) - 1), bold = TRUE) %>%
+  row_spec(0, align = "center")
 
-prepoll_table
+table_time
 
 ```
 
