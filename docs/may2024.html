@@ -70,6 +70,22 @@ ul.task-list li input[type="checkbox"] {
 
 <link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="site_libs/plotly-binding-4.10.4/plotly.js"></script>
+
+<script src="site_libs/typedarray-0.1/typedarray.min.js"></script>
+
+<script src="site_libs/jquery-3.5.1/jquery.min.js"></script>
+
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet">
+
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
+
+<link href="site_libs/plotly-htmlwidgets-css-2.11.1/plotly-htmlwidgets.css" rel="stylesheet">
+
+<script src="site_libs/plotly-main-2.11.1/plotly-latest.min.js"></script>
+
 
 
 </head>
@@ -120,7 +136,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-was-the-average-donation-and-donation-frequency" id="toc-what-was-the-average-donation-and-donation-frequency" class="nav-link active" data-scroll-target="#what-was-the-average-donation-and-donation-frequency">What was the average donation and donation frequency?</a></li>
+  <li><a href="#how-much-did-each-party-recieve-in-donations-over-the-2019-pre-poll-period" id="toc-how-much-did-each-party-recieve-in-donations-over-the-2019-pre-poll-period" class="nav-link active" data-scroll-target="#how-much-did-each-party-recieve-in-donations-over-the-2019-pre-poll-period">How much did each party recieve in donations over the 2019 pre-poll period?</a></li>
+  <li><a href="#what-was-the-average-donation-and-donation-frequency" id="toc-what-was-the-average-donation-and-donation-frequency" class="nav-link" data-scroll-target="#what-was-the-average-donation-and-donation-frequency">What was the average donation and donation frequency?</a></li>
+  <li><a href="#how-much-was-donated-on-a-week-by-week-basis-by-different-donor-types" id="toc-how-much-was-donated-on-a-week-by-week-basis-by-different-donor-types" class="nav-link" data-scroll-target="#how-much-was-donated-on-a-week-by-week-basis-by-different-donor-types">How much was donated on a week by week basis by different donor types?</a></li>
   </ul>
 </nav>
     </div>
@@ -146,17 +164,9 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Goals for this page:</p>
-<ul>
-<li>Create data summaries for the following questions ready for comparison with 2024 data:
-<ul>
-<li>Total donated to each party, classified as official pre-poll regulatory period</li>
-<li>Table to get a sense of lots of small donations, or a few big ones, and where were they coming from.</li>
-<li>Plot of type of donor and total amount donated across each week.</li>
-<li>From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?</li>
-</ul></li>
-</ul>
-<p>The table below only include donations that were classified under ‘Pre-poll party’ for the 6 weeks leading up to the elections, removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of ‘Q4 2019’ or just at the time period they were eventually reported.</p>
+<section id="how-much-did-each-party-recieve-in-donations-over-the-2019-pre-poll-period" class="level3">
+<h3 class="anchored" data-anchor-id="how-much-did-each-party-recieve-in-donations-over-the-2019-pre-poll-period">How much did each party recieve in donations over the 2019 pre-poll period?</h3>
+<p>The table below only include donations that were classified under ‘Pre-poll party’ for the 6 weeks leading up to the elections, also removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of ‘Q4 2019’ or just at the time period they were eventually reported.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -305,8 +315,13 @@ week (pre-poll period 2019 GE)
 </div>
 </div>
 </div>
+</section>
 <section id="what-was-the-average-donation-and-donation-frequency" class="level3">
 <h3 class="anchored" data-anchor-id="what-was-the-average-donation-and-donation-frequency">What was the average donation and donation frequency?</h3>
+<p>This table is intended to be used to comparison with the 2024 data to see if the changes to the law affected donations.</p>
+<p>In 2019, the conservatives received huge sums, particularly from individual donors. As well as receiving way more in donations, they also received much larger sums of money from individuals and companies on average compared to Labour. Interestingly, the Lib Dems received more individual donations than Labour (and equally as many company ones as them), also with a higher average donation amount for both donor types.</p>
+<p>As might be expected, the Labour Party total donation amount received was boosted by Trade Unions, with 28 donations and an average of huge sums, adding up to 5 mil.</p>
+<p>Reform UK received a massive amount considering their total was made up of only 9 individual donations, with an average donation amount of 400,000.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div>
@@ -322,387 +337,387 @@ week (pre-poll period 2019 GE)
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">Conservative Party</td>
+<td style="text-align: center; width: 4cm;">Conservative Party</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">196</td>
+<td style="text-align: center; width: 2cm;">196</td>
 <td style="text-align: center; width: 3cm;">£ 68,743</td>
 <td style="text-align: center; width: 3cm;">£13,473,657</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">76</td>
+<td style="text-align: center; width: 2cm;">76</td>
 <td style="text-align: center; width: 3cm;">£ 76,174</td>
 <td style="text-align: center; width: 3cm;">£ 5,789,251</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">2</td>
+<td style="text-align: center; width: 2cm;">2</td>
 <td style="text-align: center; width: 3cm;">£ 44,000</td>
 <td style="text-align: center; width: 3cm;">£ 88,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 20,000</td>
 <td style="text-align: center; width: 3cm;">£ 20,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;">Labour Party</td>
+<td style="text-align: center; width: 4cm;">Labour Party</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">13</td>
+<td style="text-align: center; width: 2cm;">13</td>
 <td style="text-align: center; width: 3cm;">£ 12,265</td>
 <td style="text-align: center; width: 3cm;">£ 159,442</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">6</td>
+<td style="text-align: center; width: 2cm;">6</td>
 <td style="text-align: center; width: 3cm;">£ 33,600</td>
 <td style="text-align: center; width: 3cm;">£ 201,600</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">28</td>
+<td style="text-align: center; width: 2cm;">28</td>
 <td style="text-align: center; width: 3cm;">£179,991</td>
 <td style="text-align: center; width: 3cm;">£ 5,039,754</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 10,500</td>
 <td style="text-align: center; width: 3cm;">£ 10,500</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">Liberal Democrats</td>
+<td style="text-align: center; width: 4cm;">Liberal Democrats</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">32</td>
+<td style="text-align: center; width: 2cm;">32</td>
 <td style="text-align: center; width: 3cm;">£ 31,406</td>
 <td style="text-align: center; width: 3cm;">£ 1,004,998</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">6</td>
+<td style="text-align: center; width: 2cm;">6</td>
 <td style="text-align: center; width: 3cm;">£ 40,167</td>
 <td style="text-align: center; width: 3cm;">£ 241,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;">Green Party</td>
+<td style="text-align: center; width: 4cm;">Green Party</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">8</td>
+<td style="text-align: center; width: 2cm;">8</td>
 <td style="text-align: center; width: 3cm;">£ 29,060</td>
 <td style="text-align: center; width: 3cm;">£ 232,477</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 10,000</td>
 <td style="text-align: center; width: 3cm;">£ 10,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">Advance Together</td>
+<td style="text-align: center; width: 4cm;">Advance Together</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">3</td>
+<td style="text-align: center; width: 2cm;">3</td>
 <td style="text-align: center; width: 3cm;">£ 10,833</td>
 <td style="text-align: center; width: 3cm;">£ 32,500</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">2</td>
+<td style="text-align: center; width: 2cm;">2</td>
 <td style="text-align: center; width: 3cm;">£ 15,000</td>
 <td style="text-align: center; width: 3cm;">£ 30,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;">Reform UK</td>
+<td style="text-align: center; width: 4cm;">Reform UK</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">9</td>
+<td style="text-align: center; width: 2cm;">9</td>
 <td style="text-align: center; width: 3cm;">£461,111</td>
 <td style="text-align: center; width: 3cm;">£ 4,150,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">Plaid Cymru</td>
+<td style="text-align: center; width: 4cm;">Plaid Cymru</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">2</td>
+<td style="text-align: center; width: 2cm;">2</td>
 <td style="text-align: center; width: 3cm;">£ 35,000</td>
 <td style="text-align: center; width: 3cm;">£ 70,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;">Alliance</td>
+<td style="text-align: center; width: 4cm;">Alliance</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">2</td>
+<td style="text-align: center; width: 2cm;">2</td>
 <td style="text-align: center; width: 3cm;">£ 12,500</td>
 <td style="text-align: center; width: 3cm;">£ 25,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 50,000</td>
 <td style="text-align: center; width: 3cm;">£ 50,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">SNP</td>
+<td style="text-align: center; width: 4cm;">SNP</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 14,929</td>
 <td style="text-align: center; width: 3cm;">£ 14,929</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 10,000</td>
 <td style="text-align: center; width: 3cm;">£ 10,000</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;">Renew</td>
+<td style="text-align: center; width: 4cm;">Renew</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 15,000</td>
 <td style="text-align: center; width: 3cm;">£ 15,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;">Women's Equality Party</td>
+<td style="text-align: center; width: 4cm;">Women's Equality Party</td>
 <td style="text-align: center; width: 4cm;">Individual</td>
-<td style="text-align: center; width: 3cm;">1</td>
+<td style="text-align: center; width: 2cm;">1</td>
 <td style="text-align: center; width: 3cm;">£ 20,000</td>
 <td style="text-align: center; width: 3cm;">£ 20,000</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Company</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Trade Union</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="even">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Unincorporated Association</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: center; width: 2.5cm;"></td>
+<td style="text-align: center; width: 4cm;"></td>
 <td style="text-align: center; width: 4cm;">Limited Liability Partnership</td>
-<td style="text-align: center; width: 3cm;">0</td>
+<td style="text-align: center; width: 2cm;">0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 <td style="text-align: center; width: 3cm;">£ 0</td>
 </tr>
@@ -713,6 +728,19 @@ week (pre-poll period 2019 GE)
 </div>
 </div>
 </div>
+</section>
+<section id="how-much-was-donated-on-a-week-by-week-basis-by-different-donor-types" class="level3">
+<h3 class="anchored" data-anchor-id="how-much-was-donated-on-a-week-by-week-basis-by-different-donor-types">How much was donated on a week by week basis by different donor types?</h3>
+<div class="cell">
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-31b5928aa34bbc7ac106" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-31b5928aa34bbc7ac106">{"x":{"data":[{"x":[1,2,3,4,5,6],"y":[3439145.9199999999,5141250,3748940.3500000001,2170714.6099999999,3604977,1077974.72],"text":["Donor Type: Individual <br>Total Donated: £3,439,146","Donor Type: Individual <br>Total Donated: £5,141,250","Donor Type: Individual <br>Total Donated: £3,748,940","Donor Type: Individual <br>Total Donated: £2,170,715","Donor Type: Individual <br>Total Donated: £3,604,977","Donor Type: Individual <br>Total Donated: £1,077,975"],"type":"scatter","mode":"lines+markers","line":{"width":3.0236220472440949,"color":"rgba(248,118,109,1)","dash":"solid"},"hoveron":"points","name":"Individual","legendgroup":"Individual","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":3.7795275590551185,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(248,118,109,1)"}},"frame":null},{"x":[1,2,3,4,5,6],"y":[153000,3433000,440466.26000000001,889416.66000000003,123870.91,0],"text":["Donor Type: Trade Union <br>Total Donated: £153,000","Donor Type: Trade Union <br>Total Donated: £3,433,000","Donor Type: Trade Union <br>Total Donated: £440,466","Donor Type: Trade Union <br>Total Donated: £889,417","Donor Type: Trade Union <br>Total Donated: £123,871","Donor Type: Trade Union <br>Total Donated: £0"],"type":"scatter","mode":"lines+markers","line":{"width":3.0236220472440949,"color":"rgba(163,165,0,1)","dash":"solid"},"hoveron":"points","name":"Trade Union","legendgroup":"Trade Union","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(163,165,0,1)","opacity":1,"size":3.7795275590551185,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(163,165,0,1)"}},"frame":null},{"x":[1,2,3,4,5,6],"y":[2904500,479500,470000,1452000,661600,379251.20000000001],"text":["Donor Type: Company <br>Total Donated: £2,904,500","Donor Type: Company <br>Total Donated: £479,500","Donor Type: Company <br>Total Donated: £470,000","Donor Type: Company <br>Total Donated: £1,452,000","Donor Type: Company <br>Total Donated: £661,600","Donor Type: Company <br>Total Donated: £379,251"],"type":"scatter","mode":"lines+markers","line":{"width":3.0236220472440949,"color":"rgba(0,191,125,1)","dash":"solid"},"hoveron":"points","name":"Company","legendgroup":"Company","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(0,191,125,1)","opacity":1,"size":3.7795275590551185,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,191,125,1)"}},"frame":null},{"x":[1,2,3,4,5,6],"y":[10500,0,78000,0,10000,0],"text":["Donor Type: Unincorporated Association <br>Total Donated: £10,500","Donor Type: Unincorporated Association <br>Total Donated: £0","Donor Type: Unincorporated Association <br>Total Donated: £78,000","Donor Type: Unincorporated Association <br>Total Donated: £0","Donor Type: Unincorporated Association <br>Total Donated: £10,000","Donor Type: Unincorporated Association <br>Total Donated: £0"],"type":"scatter","mode":"lines+markers","line":{"width":3.0236220472440949,"color":"rgba(0,176,246,1)","dash":"solid"},"hoveron":"points","name":"Unincorporated Association","legendgroup":"Unincorporated Association","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(0,176,246,1)","opacity":1,"size":3.7795275590551185,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(0,176,246,1)"}},"frame":null},{"x":[1,2,3,4,5,6],"y":[0,20000,0,0,0,0],"text":["Donor Type: Limited Liability Partnership <br>Total Donated: £0","Donor Type: Limited Liability Partnership <br>Total Donated: £20,000","Donor Type: Limited Liability Partnership <br>Total Donated: £0","Donor Type: Limited Liability Partnership <br>Total Donated: £0","Donor Type: Limited Liability Partnership <br>Total Donated: £0","Donor Type: Limited Liability Partnership <br>Total Donated: £0"],"type":"scatter","mode":"lines+markers","line":{"width":3.0236220472440949,"color":"rgba(231,107,243,1)","dash":"solid"},"hoveron":"points","name":"Limited Liability Partnership","legendgroup":"Limited Liability Partnership","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","marker":{"autocolorscale":false,"color":"rgba(231,107,243,1)","opacity":1,"size":3.7795275590551185,"symbol":"circle","line":{"width":1.8897637795275593,"color":"rgba(231,107,243,1)"}},"frame":null}],"layout":{"margin":{"t":26.228310502283104,"r":7.3059360730593621,"b":33.300035677907942,"l":69.406392694063939},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,6.5999999999999996],"tickmode":"array","ticktext":["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],"tickvals":[1,2,3,3.9999999999999996,5,6],"categoryorder":"array","categoryarray":["Week 1","Week 2","Week 3","Week 4","Week 5","Week 6"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-45,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-257062.5,5398312.5],"tickmode":"array","ticktext":["£0","£1,000,000","£2,000,000","£3,000,000","£4,000,000","£5,000,000"],"tickvals":[0,1000000,2000000,3000000.0000000005,4000000,5000000],"categoryorder":"array","categoryarray":["£0","£1,000,000","£2,000,000","£3,000,000","£4,000,000","£5,000,000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.6529680365296811,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176002,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"orientation":"h","x":0.5,"xanchor":"center","y":-0.20000000000000001},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"827c47004e07":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"},"827c7b0e1b14":{"x":{},"y":{},"colour":{},"text":{}}},"cur_data":"827c47004e07","visdat":{"827c47004e07":["function (y) ","x"],"827c7b0e1b14":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>To do:</p>
+<ul>
+<li>From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?</li>
+</ul>
 
 
 </section>

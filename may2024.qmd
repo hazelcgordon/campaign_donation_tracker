@@ -2,19 +2,17 @@
 title: "Pre poll donations 2019 GE"
 ---
 
-Goals for this page:
+### How much did each party recieve in donations over the 2019 pre-poll period?
 
-- Create data summaries for the following questions ready for comparison with 2024 data:
-  - Total donated to each party, classified as official pre-poll regulatory period
-  - Table to get a sense of lots of small donations, or a few big ones, and where were they coming from.
-  - Plot of type of donor and total amount donated across each week.
-  - From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?
+The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections, also removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
 
 ```{r include=FALSE}
 
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(plotly)
+library(scales)
 
 ```
 
@@ -54,8 +52,6 @@ central_party <- central_party %>%
   select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
 
 ```
-
-The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections, removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
 
 ```{r include=FALSE}
 
@@ -148,6 +144,14 @@ table_time
 
 ### What was the average donation and donation frequency?
 
+This table is intended to be used to comparison with the 2024 data to see if the changes to the law affected donations.
+
+In 2019, the conservatives received huge sums, particularly from individual donors. As well as receiving way more in donations, they also received much larger sums of money from individuals and companies on average compared to Labour. Interestingly, the Lib Dems received more individual donations than Labour (and equally as many company ones as them), also with a higher average donation amount for both donor types. 
+
+As might be expected, the Labour Party total donation amount received was boosted by Trade Unions, with 28 donations and an average of huge sums, adding up to 5 mil. 
+
+Reform UK received a massive amount considering their total was made up of only 9 individual donations, with an average donation amount of 400,000.
+
 ```{r include=FALSE}
 
 # Create a complete data frame with all combinations of Party Name and Donor Status
@@ -212,9 +216,9 @@ size_table <- size_table %>%
 
 average_donation <- kable(size_table, col.names = c("", "Donor Type", "No. Donations", "Average Size", "Total"), align = 'c') %>%
   kable_styling(full_width = FALSE) %>%
-  column_spec(1, width = "2.5cm", extra_css = "text-align: left;") %>%
+  column_spec(1, width = "4cm", extra_css = "text-align: left;") %>%
   column_spec(2, width = "4cm", extra_css = "text-align: left;") %>%
-  column_spec(3, width = "3cm", extra_css = "text-align: center;") %>%
+  column_spec(3, width = "2cm", extra_css = "text-align: center;") %>%
   column_spec(4, width = "3cm", extra_css = "text-align: center;") %>%
   column_spec(5, width = "3cm", extra_css = "text-align: center;")
 
@@ -222,4 +226,61 @@ average_donation
 
 ```
 
+### How much was donated on a week by week basis by different donor types?
 
+```{r echo=FALSE}
+
+#create all combos
+
+time_trend_df <- expand.grid(DonorStatus = unique(central_party$DonorStatus),
+                             ReportingPeriodName = levels(central_party$ReportingPeriodName))
+
+# add in corresponding values
+
+trend_table <- time_trend_df %>%
+  left_join(central_party %>%
+              group_by(ReportingPeriodName, DonorStatus) %>%
+              summarise(TotalSum = sum(Value, na.rm = TRUE),
+                        .groups = 'drop'),
+            by = c("ReportingPeriodName", "DonorStatus"))
+ 
+trend_table$TotalSum[is.na(trend_table$TotalSum)] <- 0
+
+# re-order columns
+
+trend_table <- trend_table %>%
+  select(ReportingPeriodName, DonorStatus, TotalSum)
+
+# graph
+
+# Create custom hover text
+trend_table <- trend_table %>%
+  mutate(hover_text = paste("Donor Type:", DonorStatus,
+                            "<br>Total Donated:", scales::dollar(TotalSum, prefix = "£", big.mark = ",")))
+
+p <- ggplot(trend_table, aes(x = ReportingPeriodName, y = TotalSum, color = DonorStatus, group = DonorStatus, text = hover_text)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(size = 1) +
+  scale_y_continuous(labels = dollar_format(prefix = "£", big.mark = ",")) +
+  labs(x = "", y = "", color = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_x_discrete(labels = function(x) paste0("Week ", seq_along(x)))
+
+interactive_plot <- ggplotly(p, tooltip = "text")
+
+interactive_plot <- interactive_plot %>%
+  layout(legend = list(
+    orientation = "h",   # Horizontal legend
+    x = 0.5,            # Center horizontally
+    xanchor = "center", # Align the center of the legend with x position
+    y = -0.2             # Position below the plot
+  ))
+
+interactive_plot
+
+```
+
+To do:
+
+  - From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?
