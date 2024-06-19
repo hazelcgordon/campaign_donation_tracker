@@ -7,7 +7,6 @@ title: "Pre-poll 2024"
 library(tidyverse)
 library(knitr)
 library(kableExtra)
-library(gt)
 
 ```
 
@@ -329,4 +328,23 @@ kable(year_summary_wide, col.names = c("", "2019", "2024", "2019", "2024", "2019
 
 ```
 
+### Labour and Conservative comparison
+
+```{r}
+
+ppw1 <- ppw1 %>%
+  filter(RegulatedEntityName == "Conservative Party"|
+         RegulatedEntityName == "Labour Party")
+
+# this leave 111 donations
+
+# Create the bar chart
+ggplot(ppw1, aes(x = interaction(RegulatedEntityName, ReportingPeriodName), y = Value, fill = DonorStatus)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Party and Year", y = "Total Amount Donated", fill = "DonorStatus") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_brewer(palette = "Set3")
+
+```
 

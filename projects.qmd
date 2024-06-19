@@ -155,3 +155,26 @@ gender_check$gender <- ifelse(
 
 ```
 
+```{r}
+
+gender_check$party_name <- as.factor(gender_check$party_name)
+
+gender_check <- gender_check %>%
+  mutate(party_name = 
+           case_when(party_name == "Labour and Co-operative Party" ~ "Labour Party",
+                     TRUE ~ party_name))
+
+gender_check <- gender_check %>%
+  mutate(party_name = 
+           case_when(party_name == "Scottish Green Party" ~ "Green Party",
+                     TRUE ~ party_name))
+
+gender_percentage <- gender_check %>%
+  group_by(party_name, gender) %>%
+  summarise(count = n()) %>%
+  mutate(total = sum(count)) %>%
+  mutate(percentage = (count / total) * 100) %>%
+  ungroup()
+
+```
+

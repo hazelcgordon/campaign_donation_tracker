@@ -146,15 +146,15 @@ table_time
 
 ```
 
+### What was the average donation and donation frequency?
 
 ```{r include=FALSE}
 
 # Create a complete data frame with all combinations of Party Name and Donor Status
-df_donationsize <- expand.grid(RegulatedEntityName = 
-                              levels(central_party$RegulatedEntityName), 
-                             DonorStatus = 
-                               unique(central_party$DonorStatus)
-                             )
+df_donationsize <- expand.grid(
+  DonorStatus = unique(central_party$DonorStatus), 
+  RegulatedEntityName = levels(central_party$RegulatedEntityName)
+)
 
 size_table <- df_donationsize %>%
   left_join(central_party %>%
@@ -172,6 +172,8 @@ size_table$TotalSum[is.na(size_table$TotalSum)] <- 0
 size_table <- size_table %>%
   mutate(Average = TotalSum/Frequency)
 
+size_table$Average[is.na(size_table$Average)] <- 0
+
 ```
 
 ```{r echo=FALSE}
@@ -187,10 +189,36 @@ size_table$TotalSum <- sprintf("£%s", format(size_table$TotalSum, big.mark = ",
 
 size_table$Average <- sprintf("£%s", format(size_table$Average, big.mark = ",", scientific = FALSE))
 
+# change the order
+
+size_table <- size_table %>%
+  select(RegulatedEntityName, DonorStatus, Frequency, Average, TotalSum)
+
+# Replace repeated party names with empty strings except for the first occurrence
+size_table$RegulatedEntityName <- as.character(size_table$RegulatedEntityName)
+for (party in unique(size_table$RegulatedEntityName)) {
+  party_indices <- which(size_table$RegulatedEntityName == party)
+  size_table$RegulatedEntityName[party_indices[-1]] <- ""
+}
+
+# swap NA's for blank spaces
+
+size_table$RegulatedEntityName <- as.character(size_table$RegulatedEntityName)
+
+size_table <- size_table %>%
+  mutate_all(~ replace_na(., ""))
+
 #create the table
 
-markdown_table <- kable(size_table, "html") %>%
-  kable_styling(full_width = FALSE)
+average_donation <- kable(size_table, col.names = c("", "Donor Type", "No. Donations", "Average Size", "Total"), align = 'c') %>%
+  kable_styling(full_width = FALSE) %>%
+  column_spec(1, width = "2.5cm", extra_css = "text-align: left;") %>%
+  column_spec(2, width = "4cm", extra_css = "text-align: left;") %>%
+  column_spec(3, width = "3cm", extra_css = "text-align: center;") %>%
+  column_spec(4, width = "3cm", extra_css = "text-align: center;") %>%
+  column_spec(5, width = "3cm", extra_css = "text-align: center;")
+
+average_donation
 
 ```
 
