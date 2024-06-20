@@ -330,7 +330,7 @@ kable(year_summary_wide, col.names = c("", "2019", "2024", "2019", "2024", "2019
 
 ### Labour and Conservative comparison
 
-```{r}
+```{r include=FALSE}
 
 ppw1 <- ppw1 %>%
   filter(RegulatedEntityName == "Conservative Party"|

@@ -281,6 +281,8 @@ interactive_plot
 
 ```
 
+
+
 To do:
 
   - From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?
