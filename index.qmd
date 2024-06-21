@@ -41,7 +41,13 @@ q1$Value <- as.numeric(gsub("[£,\"]", "", q1$Value))
 
 ### What's been happening between Jan and May, who's been donating (by donor type)?
 
-This includes the recently released donations for Q1, but also any donation that been registered with the EC so far for this year. Full figures not released for April/May period yet.
+- Date the EC data was downloaded: 07/06/2024
+- Source: https://search.electoralcommission.org.uk/
+- Search term: 'between dates 01/01/2024 - 07/06/2024' (by date recieved by donee)
+
+*Any donations reported to the EC after 7th June for this time frame won't have been captured*
+
+This includes the recently released donations for Q1, but also any donation that been registered with the EC so far for this year up till the 7th June. Full figures not released for April/May period yet. This includes public funds - full list of types of donee's shown in graph 1.
 
 ```{r include=FALSE}
 

@@ -4,7 +4,16 @@ title: "Pre poll donations 2019 GE"
 
 ### How much did each party recieve in donations over the 2019 pre-poll period?
 
-The table below only include donations that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections, also removing any public funds. This might not be representative of actual amounts, because there were many donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
+The table below only include donations to central parties that were classified under 'Pre-poll party' for the 6 weeks leading up to the elections, also removing any public funds. In the Electoral Commission donation search, these donations can be searched for under the following labels:
+
+- Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019
+- Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019
+- Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019
+- Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019
+- Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019
+- Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019 *(final 2 days)*
+
+This might not be representative of actual amounts, because there were donations made to parties not disclosed until Jan 2020 and put under the label of 'Q4 2019' or just at the time period they were eventually reported. 
 
 ```{r include=FALSE}
 
@@ -20,7 +29,7 @@ library(scales)
 
 #creating a merged dataset with new column for the pre-poll period
 
-alldonations2019 <- read.csv("data2019/alldonations_2019.csv")
+alldonations2019 <- read.csv("data2019/2019_prepoll_all.csv")
 
 # Remove £ sign and convert to numeric
 alldonations2019$Value <- as.numeric(gsub("[£,\"]", "", alldonations2019$Value))
@@ -130,7 +139,7 @@ prepoll_table <- rbind(prepoll_table, column_totals)
 # Remove the first column title
 names(prepoll_table)[1] <- ""
 
-# Use kable to create a nicely formatted table
+# Used kable to create a formatted table
 table_time <- kable(prepoll_table, col.names = c("", "1", "2", "3", "4", "5", "6")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
   column_spec(1, bold = TRUE) %>%
@@ -281,8 +290,105 @@ interactive_plot
 
 ```
 
+### Donations not classified as 'pre-poll'
 
+Many donations were made during the electoral time period that were not classified as pre-poll. This is because donations recieved under central party only are required to be disclosed. To get a full picture of what money was moving around during this time outside of those classified as pre-poll, I've explored the following questions:
 
-To do:
+- Did the main political parties receive any donations in this period that weren't registered as pre-poll?
+- If yes, were the nature of these donations disclosed?
+- For donations made to the candidates running in individual constituencies, which one's went to swing and safe seats for the Conservative and Labour party?
+- Can MP's recieve donations directly?
 
-  - From the 2019 data - how much money was received by central parties during the election period, without it being reported as pre-poll?
+To collect this data I used the following search term:
+- Source: https://search.electoralcommission.org.uk/
+- Dates of search: 06/11/2019 - 12/12/2019 (by date received by donee)
+- *Search was made on the 21st June 2024*
+
+This generated 2,324 items in the search. The 2019_prepoll_all.csv file can be found in the data2019 folder in the associated github repo for this webpage.
+
+#### How were donations during this period classified?
+
+Public funds were first removed from the data, leaving 2,303 items.
+
+Any money received by a registered political party during this period should (I assume) have been classified as pre-poll and reported during the time deadlines set by the EC. To check this, the political parties were filtered out from other types of donee's (e.g., MPs or third party groups) to see what reporting period name the donations were placed under.
+
+The 14 parties left with donations received during this time frame were:
+- Advance Together (now de-registered)
+- Alliance
+- Conservative and Unionist Party
+- Green Party
+- Labour Party
+- Liberal Democrats
+- Plaid Cymru
+- Reform UK
+- Scottish Green Party
+- Scottish Libertarian Party (now de-registered)
+- Renew
+- SNP
+- The Official Monster Raving Loony Party
+- UKIP
+- Women's Equality Party
+
+Filtering out donations received by only these parties leaves 2,228 cases. Finally, the data was filtered for those classed under 'central party' in the accounting unit, as donations to specific constituencies (I assume) did not need to be disclosed by the pre-poll deadlines. This leaves 1,015 cases, suggesting some discrepancy as only 393 of these were classified correctly(?) under the pre-poll period.
+
+*Unsure: were these donations of a nature that meant they did not need to be disclosed to the EC as pre-poll?*
+
+Below is a table that summarises, for each party, what regulatory period were the donations made during this time classed as when they were reported to the EC. The graph also shows the time lag of how long it took for the donation to be reported to the EC after it was received by the party.
+
+```{r include=FALSE}
+
+prepoll2019 <- read.csv("data2019/2019_prepoll_all.csv")
+
+# remove public funds
+
+prepoll2019 <- prepoll2019 %>%
+  filter(!DonorStatus == "Public Fund")
+
+# select variables of interest
+
+prepoll2019 <- prepoll2019 %>%
+  select(RegulatedEntityName, RegulatedEntityType, Value, AccountingUnitName, DonorName, DonorStatus, ReceivedDate, ReportingPeriodName)
+
+# shorten names for parties
+
+prepoll2019 <- prepoll2019 %>%
+  mutate(RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Advance Together [De-registered 01/10/20]"), "Advance Together"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Conservative and Unionist Party"), "Conservative Party"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Plaid Cymru - The Party of Wales"), "Plaid Cymru"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Scottish National Party (SNP)"), "SNP"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Alliance - Alliance Party of Northern Ireland"), "Alliance"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("SDLP (Social Democratic & Labour Party)"), "SDLP"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("UK Independence Party (UKIP)"), "UKIP"),
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Scottish Libertarian Party [De-registered 11/11/22]"), "Scottish Libertarian Party")
+         )
+
+# filter only the rows where these parties are the donee
+
+prepoll2019 <- prepoll2019 %>%
+  filter(RegulatedEntityName == "Advance Together"|
+           RegulatedEntityName == "Alliance"|
+           RegulatedEntityName == "Conservative Party"|
+           RegulatedEntityName == "Green Party"|
+           RegulatedEntityName == "Labour Party"|
+           RegulatedEntityName == "Liberal Democrats"|
+           RegulatedEntityName == "Plaid Cymru"|
+           RegulatedEntityName == "Reform UK"|
+           RegulatedEntityName == "Renew"|
+           RegulatedEntityName == "Scottish Green Party"|
+           RegulatedEntityName == "Scottish Libertarian Party"|
+           RegulatedEntityName == "SNP"|
+           RegulatedEntityName == "The Official Monster Raving Loony Party"|
+           RegulatedEntityName == "UKIP"|
+           RegulatedEntityName == "Women's Equality Party")
+
+# filter for central party unit
+
+prepoll2019 <- prepoll2019 %>%
+  filter(AccountingUnitName == "Central Party")
+
+#set key variables as factors
+
+central_party$RegulatedEntityName <- factor(central_party$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Renew", "Women's Equality Party"))
+
+```
+
