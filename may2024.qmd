@@ -1,5 +1,8 @@
 ---
 title: "Pre poll donations 2019 GE"
+format:
+  html:
+    self-contained: TRUE
 ---
 
 ### How much did each party recieve in donations over the 2019 pre-poll period?
@@ -300,6 +303,7 @@ Many donations were made during the electoral time period that were not classifi
 - Can MP's recieve donations directly?
 
 To collect this data I used the following search term:
+
 - Source: https://search.electoralcommission.org.uk/
 - Dates of search: 06/11/2019 - 12/12/2019 (by date received by donee)
 - *Search was made on the 21st June 2024*
@@ -313,6 +317,7 @@ Public funds were first removed from the data, leaving 2,303 items.
 Any money received by a registered political party during this period should (I assume) have been classified as pre-poll and reported during the time deadlines set by the EC. To check this, the political parties were filtered out from other types of donee's (e.g., MPs or third party groups) to see what reporting period name the donations were placed under.
 
 The 14 parties left with donations received during this time frame were:
+
 - Advance Together (now de-registered)
 - Alliance
 - Conservative and Unionist Party
@@ -388,7 +393,41 @@ prepoll2019 <- prepoll2019 %>%
 
 #set key variables as factors
 
-central_party$RegulatedEntityName <- factor(central_party$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Renew", "Women's Equality Party"))
+prepoll2019$RegulatedEntityName <- factor(prepoll2019$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Scottish Green Party", "Scottish Libertarian Party", "UKIP", "Renew", "Women's Equality Party", "The Official Monster Raving Loony Party"))
+
+prepoll2019$DonorStatus <- factor(prepoll2019$DonorStatus, levels = c("Individual", "Trade Union", "Company", "Unincorporated Association", "Registered Political Party", "Limited Liability Partnership", "Impermissible Donor"))
+
+prepoll2019$ReportingPeriodName <- factor(prepoll2019$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019", "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019", "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019", "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019", "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019", "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019", "Q4 2019"))
 
 ```
+
+```{r echo=FALSE}
+
+reporting_freq <- prepoll2019 %>%
+  select(RegulatedEntityName, ReportingPeriodName) %>%
+  group_by(RegulatedEntityName, ReportingPeriodName) %>%
+  summarise(Freq = n(), .groups = 'drop') %>%
+  pivot_wider(names_from = ReportingPeriodName, values_from = Freq, values_fill = list(Freq = 0))
+
+# add a totals row
+
+freq_totals <- reporting_freq %>%
+  summarise(across(where(is.numeric), ~ sum(.x, na.rm = TRUE))) %>%
+  mutate(RegulatedEntityName = "Total")
+
+reporting_freq <- rbind(reporting_freq, freq_totals)
+
+# kable table
+
+kable(reporting_freq, 
+      col.names = c("", "Pre-Poll 1", "Pre-Poll 2", "Pre-Poll 3", "Pre-Poll 4", "Pre-Poll 5", "Pre-Poll 6", "Q4 2019"), 
+      align = 'c') %>%
+  kable_styling(full_width = FALSE) %>%
+  column_spec(1, width = "6cm") %>%
+  add_header_above(c(" " = 1, "Donation classification" = ncol(reporting_freq) - 1), bold = TRUE) %>%
+  column_spec(8, background = "lightblue")
+  
+
+```
+
 
