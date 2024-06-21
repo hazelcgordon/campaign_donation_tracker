@@ -2,7 +2,7 @@
 title: "Pre poll donations 2019 GE"
 format:
   html:
-    self-contained: TRUE
+    css: styles.css
 ---
 
 ### How much did each party recieve in donations over the 2019 pre-poll period?
@@ -419,13 +419,13 @@ reporting_freq <- rbind(reporting_freq, freq_totals)
 
 # kable table
 
-kable(reporting_freq, 
+kable(reporting_freq, escape = FALSE, 
       col.names = c("", "Pre-Poll 1", "Pre-Poll 2", "Pre-Poll 3", "Pre-Poll 4", "Pre-Poll 5", "Pre-Poll 6", "Q4 2019"), 
       align = 'c') %>%
   kable_styling(full_width = FALSE) %>%
-  column_spec(1, width = "6cm") %>%
-  add_header_above(c(" " = 1, "Donation classification" = ncol(reporting_freq) - 1), bold = TRUE) %>%
-  column_spec(8, background = "lightblue")
+  column_spec(1, width = "5cm") %>%
+  column_spec(2:8, extra_css = "text-align: center;") %>%
+  column_spec(8, extra_css = "background-color: lightblue;")
   
 
 ```
