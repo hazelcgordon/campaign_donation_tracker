@@ -352,7 +352,7 @@ prepoll2019 <- prepoll2019 %>%
 # select variables of interest
 
 prepoll2019 <- prepoll2019 %>%
-  select(RegulatedEntityName, RegulatedEntityType, Value, AccountingUnitName, DonorName, DonorStatus, ReceivedDate, ReportingPeriodName)
+  select(RegulatedEntityName, RegulatedEntityType, Value, AccountingUnitName, DonorName, DonorStatus, ReceivedDate, ReportedDate, ReportingPeriodName, NatureOfDonation)
 
 # shorten names for parties
 
