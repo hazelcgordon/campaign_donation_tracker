@@ -368,11 +368,15 @@ totals_comparison <- kable(prepoll_comparison, col.names = c("", "2019", "2024",
 
 ```
 
-```{r, echo=FALSE}
+<div style="width: 80%; margin: auto;">
+
+```{r, results='asis', echo=FALSE}
 
 totals_comparison
 
 ```
+
+</div>
 
 The graph below shows the same trends for the main parties that received donations: Conservatives, Labour, Lib Dems, Reform, Greens, Plaid and SNP. 
 
@@ -539,6 +543,15 @@ pptotal <- pptotal %>%
          RegulatedEntityName == "Labour Party"|
            RegulatedEntityName == "Liberal Democrats"|
            RegulatedEntityName == "Reform UK")
+
+pptotal <- pptotal %>%
+  mutate(ReportingPeriodName = case_when(
+    ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019" ~ "2019",
+    ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "2019",
+    ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "2024",
+    ReportingPeriodName == "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024" ~ "2024",
+    TRUE ~ ReportingPeriodName
+  ))
 
 # this leave 247 donations
 
