@@ -270,8 +270,10 @@ trend_table <- trend_table %>%
   mutate(hover_text = paste("Donor Type:", DonorStatus,
                             "<br>Total Donated:", scales::dollar(TotalSum, prefix = "£", big.mark = ",")))
 
+# create plot
+
 p <- ggplot(trend_table, aes(x = ReportingPeriodName, y = TotalSum, color = DonorStatus, group = DonorStatus, text = hover_text)) +
-  geom_line(linewidth = 0.8) +
+  geom_line(linewidth = 0.5) +
   geom_point(size = 1) +
   scale_y_continuous(labels = dollar_format(prefix = "£", big.mark = ",")) +
   labs(x = "", y = "", color = "") +

@@ -10,6 +10,7 @@ library(tidyverse)
 library(knitr)
 library(kableExtra)
 library(plotly)
+library(scales)
 
 ```
 
@@ -198,6 +199,7 @@ prepoll_table <- prepoll_table %>%
 ```
 
 ```{r echo=FALSE}
+
 # Compute row totals
 prepoll_table <- prepoll_table %>%
   mutate(Total = rowSums(across(where(is.character), ~ as.numeric(gsub("[£,]", "", .))), na.rm = TRUE)) %>%
@@ -218,6 +220,11 @@ prepoll_table <- prepoll_table %>%
 
 # Replace 'unincorporated association' with 'unincorporated<br>association' in the column names
 names(prepoll_table) <- gsub("Unincorporated Association", "Unincorporated<br>Association", names(prepoll_table))
+
+# remove white space and replace £0
+
+prepoll_table <- remove_spaces(prepoll_table)
+prepoll_table <- replace_pound_zero(prepoll_table)
 
 # Remove the first column title
 names(prepoll_table)[1] <- ""
@@ -262,17 +269,17 @@ pptotal <- pptotal %>%
     RegulatedEntityName =="Co-operative Party", "Labour Party", RegulatedEntityName
   ))
 
-#keep only relevant columns
-
-pptotal <- pptotal %>%
-  select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
-
 # removing public funds
 
 pptotal <- pptotal %>%
   filter(!DonorStatus == "Public Fund")
 
-# Remove £ sign and convert to numeric to make candidates
+#keep only relevant columns
+
+pptotal <- pptotal %>%
+  select(RegulatedEntityName, ReportingPeriodName, ReceivedDate, Value, DonorStatus, DonorName)
+
+# Remove £ sign and convert to numeric 
 pptotal$Value <- as.numeric(gsub("[£,\"]", "", pptotal$Value))
 
 # converting names
@@ -367,16 +374,24 @@ totals_comparison
 
 ```
 
-#### Split by donor type
+The graph below shows the same trends for the main parties that received donations: Conservatives, Labour, Lib Dems, Reform, Greens, Plaid and SNP. 
 
-The table below summarises the total amounts recieved in week 1 and 2 of the campaigns, split by donor type (scroll left to see all columns). 
+```{r echo=FALSE}
+# graph to show the same thing with more clarity
 
-```{r echo=FALSE, warning=FALSE}
+pptotal <- pptotal %>%
+  mutate(PrePollWeek = case_when(
+    ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019" ~ "week one",
+    ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "week one",
+    ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "week two",
+    ReportingPeriodName == "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024" ~ "week two",
+    TRUE ~ ReportingPeriodName
+  ))
 
 # merge the reporting period names into 2019 and 2024 totals
 
 pptotal <- pptotal %>%
-  mutate(ReportingPeriodName = case_when(
+  mutate(Year = case_when(
     ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019" ~ "2019",
     ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "2019",
     ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "2024",
@@ -384,13 +399,79 @@ pptotal <- pptotal %>%
     TRUE ~ ReportingPeriodName
   ))
 
+# filter out for main parties
+
+ppmain <- pptotal %>%
+  filter(RegulatedEntityName == "Conservative Party"|
+           RegulatedEntityName == "Labour Party"|
+           RegulatedEntityName == "Liberal Democrats"|
+           RegulatedEntityName == "Reform UK"|
+           RegulatedEntityName == "Green Party"|
+           RegulatedEntityName == "Plaid Cymru"|
+           RegulatedEntityName == "SNP")
+
+# creating a line graph that has week along the x-axis but splits into facets by year
+
+# Aggregate the data to sum donations by party, period, and donor status
+line_party <- ppmain %>%
+  group_by(RegulatedEntityName, PrePollWeek, Year) %>%
+  summarise(TotalValue = sum(Value), .groups = 'drop')
+
+# Hover text customised
+
+line_party <- line_party %>%
+  mutate(HoverText = paste0("Total Value: £", format(round(TotalValue, 0), big.mark = ",", scientific = FALSE), "<br>",
+                            "Party: ", RegulatedEntityName, "<br>",
+                            "Pre-poll period: ", PrePollWeek))
+
+# customised colours
+
+party_colors <- c(
+  "Conservative Party" = "#000080",  # Navy Blue
+  "Labour Party" = "#FF0000",        # Red
+  "Liberal Democrats" = "#FFD700",   # Dark Yellow
+  "Reform UK" = "#ADD8E6",           # Light Blue
+  "Green Party" = "#006400",         # Dark Green
+  "Plaid Cymru" = "#90EE90",         # Light Green
+  "SNP" = "orange"                  # Orange
+)
+
+# Create the line chart
+
+p <- ggplot(line_party, aes(x = PrePollWeek, y = TotalValue, color = RegulatedEntityName, text = HoverText, group = RegulatedEntityName)) +
+  geom_line(linewidth = 0.5) +
+  geom_point(size = 2) +
+  scale_y_continuous(labels = dollar_format(prefix = "£", big.mark = ",")) +
+  labs(x = "", y = "", color = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = party_colors) +
+  facet_wrap(~ Year, scales = "free_x", nrow = 1) +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(face = "bold"))
+
+# Convert to interactive plot with plotly
+maintrends_interactive <- ggplotly(p, tooltip = "text")
+
+# show
+
+maintrends_interactive
+
+```
+
+#### Split by donor type
+
+The table below summarises the total amounts recieved in week 1 and 2 of the campaigns, split by donor type (scroll left to see all columns). 
+
+```{r echo=FALSE, warning=FALSE}
+
 # create summary table
 
 year_summary <- pptotal %>%
-  select(RegulatedEntityName, ReportingPeriodName, DonorStatus, Value) %>%
-  group_by(RegulatedEntityName, DonorStatus, ReportingPeriodName) %>%
+  select(RegulatedEntityName, Year, DonorStatus, Value) %>%
+  group_by(RegulatedEntityName, DonorStatus, Year) %>%
   summarise(TotalValue = sum(Value), .groups = 'drop') %>%
-  complete(RegulatedEntityName, DonorStatus, ReportingPeriodName, fill = list(TotalValue = 0))
+  complete(RegulatedEntityName, DonorStatus, Year, fill = list(TotalValue = 0))
 
 # Convert value to money format
 year_summary$TotalValue <- round(year_summary$TotalValue)
@@ -400,7 +481,7 @@ year_summary$TotalValue <- sprintf("£%s", format(year_summary$TotalValue, big.m
 
 year_summary_wide <- year_summary %>%
   pivot_wider(
-    names_from = c(DonorStatus, ReportingPeriodName),
+    names_from = c(DonorStatus, Year),
     values_from = TotalValue,
     names_sep = "_"
   )
