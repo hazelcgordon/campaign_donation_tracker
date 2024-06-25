@@ -9,6 +9,7 @@ This page summarises the donations documented by the Electoral Commission during
 library(tidyverse)
 library(knitr)
 library(kableExtra)
+library(plotly)
 
 ```
 
@@ -236,7 +237,7 @@ The table below summarises the total amounts received by each party, split by pr
 
 #### Week one and two
 
-The table below summarises totals for week one and two, split by 2019 and 2024.
+The table below summarises totals for week one and two, split by 2019 and 2024. Interestingly, Labour recieved a higher total donation amount in week 2 of the 2019 campaign, however when looking at donor type, it can be seem this was massively boosted by Trade Union donations - individual and company donations remained low for Labour during week 2 of the 2019 campaign.
 
 ```{r include=FALSE}
 
@@ -445,10 +446,12 @@ kable(year_summary_wide, col.names = c("", "2019", "2024", "2019", "2024", "2019
 
 ```
 
+### Biggest party comparisons
 
-### Labour and Conservative comparison
+Below sums up the totals received in 2019 and 2024 by the parties currently receiving the most donations. This is to get a better sense of total amounts compared to 2019 - it is interesting that, at least by week 2 of the campaign, there was still much more money going into the conservatives relative to how much Labour are getting now. It can also be seen how much of Labours donations in 2019 came from Trade Unions, whereas this time round they have received little from them and are getting most their donations from individuals. 
 
-```{r include=FALSE}
+
+```{r echo=FALSE}
 
 pptotal <- pptotal %>%
   filter(RegulatedEntityName == "Conservative Party"|
@@ -458,13 +461,39 @@ pptotal <- pptotal %>%
 
 # this leave 247 donations
 
+# Aggregate the data to sum donations by party, period, and donor status
+pptotal_agg <- pptotal %>%
+  group_by(RegulatedEntityName, ReportingPeriodName, DonorStatus) %>%
+  summarise(TotalValue = sum(Value), .groups = 'drop')
+
+# Hover text customised
+
+pptotal_agg <- pptotal_agg %>%
+  mutate(HoverText = paste0("Total Value: £", format(round(TotalValue, 0), big.mark = ",", scientific = FALSE), "<br>",
+                            "Donor Status: ", DonorStatus, "<br>",
+                            "Party: ", RegulatedEntityName, "<br>",
+                            "Year: ", ReportingPeriodName))
+
 # Create the bar chart
-ggplot(pptotal, aes(x = interaction(RegulatedEntityName, ReportingPeriodName), y = Value, fill = DonorStatus)) +
+p <- ggplot(pptotal_agg, aes(x = RegulatedEntityName, y = TotalValue, fill = DonorStatus, text = HoverText)) +
   geom_bar(stat = "identity") +
-  labs(x = "", y = "", fill = "Donor Type") +
+  labs(x = "", y = "", fill = "") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_fill_brewer(palette = "Set3")
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom",
+        legend.justification = "center") +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "£", big.mark = ",")) +
+  scale_fill_brewer(palette = "Set3") +
+  facet_wrap(~ ReportingPeriodName, scales = "free_x", nrow = 1) +
+  theme(strip.background = element_blank(),
+        strip.text = element_text(face = "bold"))
+
+# Convert to interactive plot with plotly
+totals_interactive <- ggplotly(p, tooltip = "text")
+
+# show
+
+totals_interactive
 
 ```
 
