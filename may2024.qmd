@@ -501,10 +501,217 @@ kable(reporting_value, escape = FALSE,
 
 The graph shows the time lag of how long it took for the donation to be reported to the EC after it was accepted by the party, for all those what were classified as 'Q4 2019' rather than reported within a pre-poll period.
 
-```{r}
+All graphs and tables below filter the data for only those that were classified in the Q4 2019 reporting period.
 
+```{r include=FALSE}
+
+q4_donations <- prepoll2019 %>%
+  filter(ReportingPeriodName == "Q4 2019")
+
+```
+
+#### What kind of donors were these donations coming from?
+
+The table below shows, for the total £31,481,609 received by parties, what percentage of donor types make up this amount.
+
+```{r echo=FALSE}
+
+# create percentages
+
+q4_percentage <- q4_donations %>%
+  select(DonorStatus, Value) %>%
+  group_by(DonorStatus) %>%
+  summarise(
+    TotalValue = sum(Value), 
+    Percentage = (sum(Value) / sum(q4_donations$Value)) * 100
+  ) %>%
+  mutate(
+    TotalValue = scales::dollar(TotalValue, prefix = "£", largest_with_cents = 0),
+    Percentage = round(Percentage, 1)
+  )
+
+# kable table
+
+q4_percentage_t <- kable(q4_percentage, col.names = c("", "Donation Total", "%"), align = 'c') %>%
+kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"))
+
+```
+
+<div style="width: 60%; margin: auto;">
+
+```{r results='asis', echo=FALSE}
+
+q4_percentage_t
+
+```
+
+</div>
+
+#### Amounts received by political parties
+
+The graph below breaks down where these donations were mostly coming from by donor type, showing what type of donors made up the % of donations received. It is not so different from the one's reported as pre-poll, in that donations mostly come from individual and company donors. However, the Lib Dems did receive 8% of their total donations accepted during the pre-poll period and classified under 'Q4 2019' from an impermissible donor.
+
+```{r echo=FALSE}
+
+#group donor status by disclosure of purpose
+
+donor_type_percent <- q4_donations %>%
+  group_by(RegulatedEntityName, DonorStatus) %>%
+  summarise(Count = n(), TotalValue = sum(Value), .groups = 'drop') %>%
+  group_by(RegulatedEntityName) %>%
+  mutate(Percentage = TotalValue / sum(TotalValue) * 100) %>%
+  ungroup()
+
+#altering display of x-axis labels
+
+donor_type_percent <- donor_type_percent %>%
+  mutate(RegulatedEntityName = case_when(
+    RegulatedEntityName == "The Official Monster Raving Loony Party" ~ "The Official Monster\n Raving Loony Party",
+    TRUE ~ RegulatedEntityName
+  ))
+
+#re-order factor
+
+donor_type_percent <- donor_type_percent %>%
+  mutate(RegulatedEntityName = factor(RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Scottish Green Party", "Scottish Libertarian Party", "UKIP", "Renew", "Women's Equality Party", "The Official Monster\n Raving Loony Party")))
+
+# formatting values as money
+
+donor_type_percent <- donor_type_percent %>%
+  mutate(TotalValue = scales::dollar(TotalValue, prefix = "£", big.mark = ",", accuracy = 1))
+
+# Add a formatted value column for hover text
+donor_type_percent <- donor_type_percent %>%
+  mutate(HoverText = paste0("Donor Type: ", DonorStatus, "<br>",
+                            "Total Frequency: ", format(Count), "<br>",
+                            "Percentage: ", sprintf("%.0f%%", 
+                                                    Percentage), "<br>",
+                            "Total Value: ", TotalValue, "<br>",
+                            "Political Party: ", RegulatedEntityName))
+
+#create a stacked bar chart plot
+
+type_colors <- c(
+  "Individual" = "#a6cee3",
+  "Company" = "#ff7f00",
+  "Trade Union" = "#cab2d6",
+  "Registered Political Party" = "#b2df8a",
+  "Unincorporated Association" = "#fb9a99",
+  "Limited Liability Partnership" = "#6a3d9a",
+  "Impermissible Donor" = "#ff33cc"
+)
+
+type_p <- ggplot(donor_type_percent, aes(x = RegulatedEntityName, y = Percentage, fill = DonorStatus, text = HoverText)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = type_colors) +
+  labs(title = "",
+       x = "",
+       y = "",
+       fill = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+#interactive plot
+
+type_int <- ggplotly(type_p, tooltip = c("text"))
+
+#customisation
+
+type_int <- type_int %>%
+  layout(
+    legend = list(
+      title = list(text = NULL),  # Remove the legend title
+      orientation = "v",          # Vertical legend
+      x = 1.02,                   
+      xanchor = "left",           # Align to the left
+      y = 0.5,                    # Center vertically
+      yanchor = "middle",         # Align to the middle
+      font = list(size = 10),     # Adjust legend font size
+      itemwidth = 30),
+    margin = list(r = 120),       
+    annotations = list(
+      list(
+        x = 1,                      # Position on the right
+        y = 1,                   # Position below the legend
+        text = "Source: Electoral Commission 2024 Donations Data",  
+        showarrow = FALSE,          # No arrow
+        xref = 'paper',             # Relative to the plotting area
+        yref = 'paper',             # Relative to the plotting area
+        xanchor = 'right',          # Align text to the right
+        yanchor = 'auto',           # Automatic vertical alignment
+        font = list(size = 10)      # Adjust annotation font size
+      )
+    )
+  )
+
+type_int
 
 
 ```
 
-#### 
+The graph below, however, puts these amounts into perspective.
+
+```{r echo=FALSE}
+
+# bar graph with total amounts by each type of donor
+
+df_q4 <- expand.grid(RegulatedEntityName = 
+                            levels(q4_donations$RegulatedEntityName), 
+                         DonorStatus = 
+                           unique(q4_donations$DonorStatus)
+                         )
+
+# merge the values with each combo
+
+q4_table <- df_q4 %>%
+  left_join(q4_donations %>%
+              group_by(RegulatedEntityName, DonorStatus) %>%
+            summarise(TotalValue = sum(Value, na.rm = TRUE), 
+                      .groups = 'drop'),
+            by = c("RegulatedEntityName", "DonorStatus"))
+
+#replace NA with £0
+    
+q4_table$TotalValue[is.na(q4_table$TotalValue)] <- 0
+
+# create plot, donor type split by party
+
+q4_table <- q4_table %>%
+  mutate(RegulatedEntityName = case_when(
+    RegulatedEntityName == "The Official Monster Raving Loony Party" ~ "The Official Monster\n Raving Loony Party",
+    TRUE ~ RegulatedEntityName
+  ))
+
+#re-order factor
+
+q4_table <- q4_table %>%
+  mutate(RegulatedEntityName = factor(RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Scottish Green Party", "Scottish Libertarian Party", "UKIP", "Renew", "Women's Equality Party", "The Official Monster\n Raving Loony Party")))
+
+# Hover text customised
+
+q4_table <- q4_table %>%
+  mutate(HoverText = paste0("Total Value: £", format(round(TotalValue, 0), big.mark = ",", scientific = FALSE), "<br>",
+                            "Donor Type: ", DonorStatus, "<br>",
+                            "Party: ", RegulatedEntityName, "<br>"))
+
+# Create the bar chart
+p <- ggplot(q4_table, aes(x = RegulatedEntityName, y = TotalValue, fill = DonorStatus, text = HoverText)) +
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "", fill = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        legend.position = "bottom",
+        legend.justification = "center") +
+  scale_y_continuous(labels = scales::label_dollar(prefix = "£", big.mark = ",")) +
+  scale_fill_brewer(palette = "Set3") 
+
+p <- ggplotly(p, tooltip = c('text'))
+
+p
+
+```
+
+
+
+

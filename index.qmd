@@ -480,8 +480,8 @@ donor_status_percent <- donor_status_percent %>%
 # Add a formatted value column for hover text
 donor_status_percent <- donor_status_percent %>%
   mutate(HoverText = paste0("Total Frequency: ", format(Count), "<br>",
-                            "Percentage: ", sprintf("%.1f", Percentage), 
-                            "<br>",
+                            "Percentage: ", sprintf("%.0f%%", 
+                                                    Percentage), "<br>",
                             "Nature of Donation: ", NatureOfDonation))
 
 #create a stacked bar chart plot
