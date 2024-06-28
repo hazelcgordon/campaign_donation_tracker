@@ -355,9 +355,11 @@ The 14 parties left with donations received during this time frame were:
 
 Finally, the data was filtered for those classed under 'central party' in the accounting unit, as donations to specific constituencies did not need to be disclosed by the pre-poll deadlines. This leaves 1,015 cases.
 
-*Unsure: were these donations of a nature that meant they did not need to be disclosed to the EC as pre-poll?*
+Parties re-submit their prepoll donations at the end of the quarter, meaning there were 229 donations received by parties during this time that were not submitted in the weekly pre-poll reports.
 
 Below is a table that summarises, for each party, what regulatory period were the donations made during this time classed as when they were reported to the EC. The blue column is those that were reported as 'Q4 2019', but were accepted by a central party unit during the pre-poll period between the 6th November and 12th of December 2019.
+
+NEEDS TO BE UPDATED FOR REPEATS.
 
 ```{r include=FALSE}
 
@@ -426,7 +428,7 @@ prepoll2019$ReportingPeriodName <- factor(prepoll2019$ReportingPeriodName, level
 
 ```
 
-```{r echo=FALSE}
+```{r include=FALSE}
 
 reporting_freq <- prepoll2019 %>%
   select(RegulatedEntityName, ReportingPeriodName) %>%
@@ -461,7 +463,7 @@ kable(reporting_freq, escape = FALSE,
 
 Huge amounts were donated and accepted by the parties in this time period and not included in the pre-poll stats, a total of over 31 million, and half of the total donations received by the conservatives during this time.
 
-```{r echo=FALSE}
+```{r include=FALSE}
 
 # Remove £ sign and convert to numeric
 prepoll2019$Value <- as.numeric(gsub("[£,\"]", "", prepoll2019$Value))
@@ -520,7 +522,7 @@ q4_donations <- prepoll2019 %>%
 
 #### What kind of donors were these donations coming from?
 
-The table below shows, for the total £31,481,609 received by parties, what percentage of donor types make up this amount.
+The table below shows, for the total £32,655,503 received by parties in total, what percentage of donor types make up this amount.
 
 ```{r echo=FALSE}
 
