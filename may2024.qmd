@@ -43,7 +43,7 @@ library(lubridate)
 
 #creating a merged dataset with new column for the pre-poll period
 
-alldonations2019 <- read.csv("data2019/2019_prepoll_all.csv")
+alldonations2019 <- read.csv("data2019/2019_q4_donations.csv")
 
 # Remove £ sign and convert to numeric
 alldonations2019$Value <- as.numeric(gsub("[£,\"]", "", alldonations2019$Value))
@@ -135,6 +135,12 @@ prepoll_table <- prepoll_table %>%
 prepoll_table <- prepoll_table %>%
   select(RegulatedEntityName, `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`, `Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019`, `Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019`, `Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019`, `Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019`, `Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019`)
 
+# create a totals column
+
+prepoll_table <- prepoll_table %>%
+  mutate(Total = rowSums(across(where(is.character), ~ as.numeric(gsub("[£,]", "", .))), na.rm = TRUE)) %>%
+  mutate(Total = sprintf("£%s", format(Total, big.mark = ",", scientific = FALSE)))
+
 # create a totals row
 
 column_totals <- prepoll_table %>%
@@ -154,7 +160,7 @@ prepoll_table <- rbind(prepoll_table, column_totals)
 names(prepoll_table)[1] <- ""
 
 # Used kable to create a formatted table
-table_time <- kable(prepoll_table, col.names = c("", "1", "2", "3", "4", "5", "6")) %>%
+table_time <- kable(prepoll_table, col.names = c("", "1", "2", "3", "4", "5", "6", "Total")) %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
   column_spec(1, bold = TRUE) %>%
   row_spec(nrow(prepoll_table), bold = TRUE, color = "white", background = "black") %>%
@@ -318,16 +324,16 @@ Many donations were made during the electoral time period that were not classifi
 To collect this data I used the following search term:
 
 - Source: https://search.electoralcommission.org.uk/
-- Dates of search: 06/11/2019 - 12/12/2019 (by date received by donee)
-- *Search was made on the 21st June 2024*
+- Dates of search: all 2019 quarter 4 donations (by date received by donee)
+- *Search was made on the 28th June 2024*
 
-This generated 2,324 items in the search. The 2019_prepoll_all.csv file can be found in the data2019 folder in the associated github repo for this webpage.
+This generated 3,353 items in the search. The 2019_q4_donations.csv file can be found in the data2019 folder in the associated github repo for this webpage.
 
 #### How were donations during this period classified?
 
-Public funds were first removed from the data, leaving 2,303 items.
+Public funds were first removed from the data, leaving 3,286 items. They were then filtered for the pre-poll dates between 06/11/2019 - 12/12/2019, leaving 2,303 cases.
 
-Any money received by a registered political party during this period should (I assume) have been classified as pre-poll and reported during the time deadlines set by the EC. To check this, the political parties were filtered out from other types of donee's (e.g., MPs or third party groups) to see what reporting period name the donations were placed under.
+Any money received by a registered political party during this period should have been classified as pre-poll and reported during the time deadlines set by the EC. To check this, the political parties were filtered out from other types of donee's (e.g., MPs or third party groups) to see what reporting period name the donations were placed under.
 
 The 14 parties left with donations received during this time frame were:
 
@@ -347,9 +353,7 @@ The 14 parties left with donations received during this time frame were:
 - UKIP
 - Women's Equality Party
 
-Filtering out donations received by only these parties leaves 2,228 cases. Finally, the data was filtered for those classed under 'central party' in the accounting unit, as donations to specific constituencies (I assume) did not need to be disclosed by the pre-poll deadlines. This leaves 1,015 cases.
-
-The dataset was further filtered for the 'accepted date', to remove any donations that were accepted by the party after the 12th of December. This leaves 964 cases, suggesting some discrepancy as only 393 of these were classified correctly under the pre-poll period (5 donations did not report their accepted date).
+Finally, the data was filtered for those classed under 'central party' in the accounting unit, as donations to specific constituencies did not need to be disclosed by the pre-poll deadlines. This leaves 1,015 cases.
 
 *Unsure: were these donations of a nature that meant they did not need to be disclosed to the EC as pre-poll?*
 
@@ -357,18 +361,18 @@ Below is a table that summarises, for each party, what regulatory period were th
 
 ```{r include=FALSE}
 
-prepoll2019 <- read.csv("data2019/2019_prepoll_all.csv")
+prepoll2019 <- read.csv("data2019/2019_q4_donations.csv")
 
 # remove public funds
 
 prepoll2019 <- prepoll2019 %>%
   filter(!DonorStatus == "Public Fund")
 
-# filter by accepted date
+# filter by received date
 
 prepoll2019 <- prepoll2019 %>%
-  mutate(AcceptedDate = dmy(AcceptedDate)) %>% 
-  filter(AcceptedDate >= dmy("06/11/2019") & AcceptedDate <= dmy("12/12/2019")| is.na(AcceptedDate))
+  mutate(ReceivedDate = dmy(ReceivedDate)) %>% 
+  filter(ReceivedDate >= dmy("06/11/2019") & ReceivedDate <= dmy("12/12/2019")| is.na(ReceivedDate))
 
 # select variables of interest
 
@@ -497,6 +501,8 @@ kable(reporting_value, escape = FALSE,
 
 ```
 
+### Pre-poll donations reported as 'Q4 2019'
+
 #### Time lag
 
 The graph shows the time lag of how long it took for the donation to be reported to the EC after it was accepted by the party, for all those what were classified as 'Q4 2019' rather than reported within a pre-poll period.
@@ -507,6 +513,8 @@ All graphs and tables below filter the data for only those that were classified 
 
 q4_donations <- prepoll2019 %>%
   filter(ReportingPeriodName == "Q4 2019")
+
+
 
 ```
 
