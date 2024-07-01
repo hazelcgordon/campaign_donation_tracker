@@ -370,11 +370,49 @@ prepoll2019 <- read.csv("data2019/2019_q4_donations.csv")
 prepoll2019 <- prepoll2019 %>%
   filter(!DonorStatus == "Public Fund")
 
+# create pre-poll dataframe to bind later
+
+prepoll_classified <- prepoll2019 %>%
+  filter(ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019"|
+         ReportingPeriodName == "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019")
+
+#filter central party unit
+
+prepoll2019 <- prepoll2019 %>%
+  filter(AccountingUnitName == "Central Party")
+
+# remove pre-poll from these
+
+prepoll2019 <- prepoll2019 %>%
+  filter(!(ReportingPeriodName %in% c(
+    "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019",
+    "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019",
+    "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019",
+    "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019",
+    "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019",
+    "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019"
+  )))
+
 # filter by received date
 
 prepoll2019 <- prepoll2019 %>%
   mutate(ReceivedDate = dmy(ReceivedDate)) %>% 
   filter(ReceivedDate >= dmy("06/11/2019") & ReceivedDate <= dmy("12/12/2019")| is.na(ReceivedDate))
+
+# filter out values below 7,500
+
+prepoll2019$Value <- as.numeric(gsub("[£,\"]", "", prepoll2019$Value))
+
+prepoll2019 <- prepoll2019 %>%
+  filter(Value >= 7500)
+
+# bind the dataframes
+
+prepoll2019 <- rbind(prepoll_classified, prepoll2019)
 
 # select variables of interest
 
@@ -388,39 +426,12 @@ prepoll2019 <- prepoll2019 %>%
          RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Conservative and Unionist Party"), "Conservative Party"),
          RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Plaid Cymru - The Party of Wales"), "Plaid Cymru"),
          RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Scottish National Party (SNP)"), "SNP"),
-         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Alliance - Alliance Party of Northern Ireland"), "Alliance"),
-         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("SDLP (Social Democratic & Labour Party)"), "SDLP"),
-         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("UK Independence Party (UKIP)"), "UKIP"),
-         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Scottish Libertarian Party [De-registered 11/11/22]"), "Scottish Libertarian Party")
+         RegulatedEntityName = str_replace_all(RegulatedEntityName, fixed("Alliance - Alliance Party of Northern Ireland"), "Alliance")
          )
-
-# filter only the rows where these parties are the donee
-
-prepoll2019 <- prepoll2019 %>%
-  filter(RegulatedEntityName == "Advance Together"|
-           RegulatedEntityName == "Alliance"|
-           RegulatedEntityName == "Conservative Party"|
-           RegulatedEntityName == "Green Party"|
-           RegulatedEntityName == "Labour Party"|
-           RegulatedEntityName == "Liberal Democrats"|
-           RegulatedEntityName == "Plaid Cymru"|
-           RegulatedEntityName == "Reform UK"|
-           RegulatedEntityName == "Renew"|
-           RegulatedEntityName == "Scottish Green Party"|
-           RegulatedEntityName == "Scottish Libertarian Party"|
-           RegulatedEntityName == "SNP"|
-           RegulatedEntityName == "The Official Monster Raving Loony Party"|
-           RegulatedEntityName == "UKIP"|
-           RegulatedEntityName == "Women's Equality Party")
-
-# filter for central party unit
-
-prepoll2019 <- prepoll2019 %>%
-  filter(AccountingUnitName == "Central Party")
 
 #set key variables as factors
 
-prepoll2019$RegulatedEntityName <- factor(prepoll2019$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Scottish Green Party", "Scottish Libertarian Party", "UKIP", "Renew", "Women's Equality Party", "The Official Monster Raving Loony Party"))
+prepoll2019$RegulatedEntityName <- factor(prepoll2019$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Green Party", "Advance Together", "Reform UK", "Plaid Cymru", "Alliance", "SNP", "Scottish Green Party", "Renew", "Women's Equality Party"))
 
 prepoll2019$DonorStatus <- factor(prepoll2019$DonorStatus, levels = c("Individual", "Trade Union", "Company", "Unincorporated Association", "Registered Political Party", "Limited Liability Partnership", "Impermissible Donor"))
 
@@ -430,11 +441,26 @@ prepoll2019$ReportingPeriodName <- factor(prepoll2019$ReportingPeriodName, level
 
 ```{r include=FALSE}
 
+# merge all prepoll periods
+
+prepoll2019 <- prepoll2019 %>%
+  mutate(Period = case_when(
+    ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019" ~ "PrePoll",
+    ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "PrePoll",
+    ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019" ~ "PrePoll",
+    ReportingPeriodName == "Pre-Poll 4 - Party(27/11/19 - 03/12/19) UKPGE 2019" ~ "PrePoll",
+    ReportingPeriodName == "Pre-Poll 5 - Party(04/12/19 - 10/12/19) UKPGE 2019" ~ "PrePoll",
+    ReportingPeriodName == "Pre-Poll 6 - Party(11/12/19 - 12/12/19) UKPGE 2019" ~ "PrePoll",
+    TRUE ~ ReportingPeriodName 
+  ))
+
+# calculate 
+
 reporting_freq <- prepoll2019 %>%
-  select(RegulatedEntityName, ReportingPeriodName) %>%
-  group_by(RegulatedEntityName, ReportingPeriodName) %>%
+  select(RegulatedEntityName, Period) %>%
+  group_by(RegulatedEntityName, Period) %>%
   summarise(Freq = n(), .groups = 'drop') %>%
-  pivot_wider(names_from = ReportingPeriodName, values_from = Freq, values_fill = list(Freq = 0)) %>%
+  pivot_wider(names_from = Period, values_from = Freq, values_fill = list(Freq = 0)) %>%
   rowwise() %>%
   mutate(Total = sum(c_across(where(is.numeric)), na.rm = TRUE)) %>%
   ungroup()
@@ -447,15 +473,25 @@ freq_totals <- reporting_freq %>%
 
 reporting_freq <- rbind(reporting_freq, freq_totals)
 
+# subtracting the prepoll from Q4 to find unclassified prepoll donations
+
+reporting_freq <- reporting_freq %>%
+  mutate(Late = `Q4 2019` - PrePoll)
+
+# reselecting correct rows
+
+reporting_freq <- reporting_freq %>%
+  select(RegulatedEntityName, PrePoll, `Q4 2019`, Late)
+
 # kable table
 
 kable(reporting_freq, escape = FALSE, 
-      col.names = c("", "Pre-Poll 1", "Pre-Poll 2", "Pre-Poll 3", "Pre-Poll 4", "Pre-Poll 5", "Pre-Poll 6", "Q4 2019", "Total"), 
+      col.names = c("", "Pre-Poll", "Q4 2019", "Reported Late"), 
       align = 'c') %>%
   kable_styling(full_width = FALSE) %>%
   column_spec(1, width = "5cm") %>%
-  column_spec(2:8, extra_css = "text-align: center;") %>%
-  column_spec(8, extra_css = "background-color: lightblue;")
+  column_spec(2:3, extra_css = "text-align: center;") %>%
+  column_spec(4, extra_css = "background-color: lightblue;")
 
 ```
 
@@ -465,16 +501,15 @@ Huge amounts were donated and accepted by the parties in this time period and no
 
 ```{r include=FALSE}
 
-# Remove £ sign and convert to numeric
 prepoll2019$Value <- as.numeric(gsub("[£,\"]", "", prepoll2019$Value))
 
 # create table
 
 reporting_value <- prepoll2019 %>%
-  select(RegulatedEntityName, ReportingPeriodName, Value) %>%
-  group_by(RegulatedEntityName, ReportingPeriodName) %>%
+  select(RegulatedEntityName, Period, Value) %>%
+  group_by(RegulatedEntityName, Period) %>%
   summarise(TotalValue = sum(Value), .groups = 'drop') %>%
-  pivot_wider(names_from = ReportingPeriodName, values_from = TotalValue, values_fill = list(TotalValue = 0)) %>%
+  pivot_wider(names_from = Period, values_from = TotalValue, values_fill = list(TotalValue = 0)) %>%
   rowwise() %>%
   mutate(Total = sum(c_across(where(is.numeric)), na.rm = TRUE)) %>%
   ungroup()
@@ -487,19 +522,29 @@ value_totals <- reporting_value %>%
 
 reporting_value <- rbind(reporting_value, value_totals)
 
+# calculate the total late reported
+
+reporting_value <- reporting_value %>%
+  mutate(Late = `Q4 2019` - PrePoll)
+
 # Apply the formatting to all numeric columns except the first column
 
 reporting_value <- reporting_value %>%
   mutate(across(-1, ~ format_currency(round(.))))
 
+# reselect rows
+
+reporting_value <- reporting_value %>%
+  select(RegulatedEntityName, PrePoll, `Q4 2019`, Late)
+
 # table
 
 kable(reporting_value, escape = FALSE, 
-      col.names = c("", "Pre-Poll 1", "Pre-Poll 2", "Pre-Poll 3", "Pre-Poll 4", "Pre-Poll 5", "Pre-Poll 6", "Q4 2019", "Total"), 
+      col.names = c("", "Pre-Poll", "Q4 2019", "Reported Late"), 
       align = 'c') %>%
   kable_styling(full_width = FALSE) %>%
   column_spec(1, width = "5cm") %>%
-  column_spec(8, extra_css = "background-color: lightblue;")
+  column_spec(4, extra_css = "background-color: lightblue;")
 
 ```
 
@@ -559,7 +604,7 @@ q4_percentage_t
 
 #### Amounts received by political parties
 
-The graph below breaks down where these donations were mostly coming from by donor type, showing what type of donors made up the % of donations received. It is not so different from the one's reported as pre-poll, in that donations mostly come from individual and company donors. However, the Lib Dems did receive 8% of their total donations accepted during the pre-poll period and classified under 'Q4 2019' from an impermissible donor.
+The graph below breaks down where these donations were mostly coming from by donor type, showing what type of donors made up the % of donations received.
 
 ```{r echo=FALSE}
 

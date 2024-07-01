@@ -40,10 +40,11 @@ All donations made to the Co-operative party were combined with the Labour party
 
 pp2024 <- read.csv("data2024/prepoll1_2024.csv")
 pp2024_2 <- read.csv("data2024/prepoll2_2024.csv")
+pp2024_3 <- read.csv("data2024/prepoll3_2024.csv")
 
 #combine
 
-pp2024 <- rbind(pp2024, pp2024_2)
+pp2024 <- rbind(pp2024, pp2024_2, pp2024_3)
 
 #removing public fund money
 
@@ -72,11 +73,11 @@ pp2024$RegulatedEntityName <- gsub("Scottish National Party \\(SNP\\)", "SNP", p
 
 #creating factors
 
-pp2024$RegulatedEntityName <- factor(pp2024$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Green Party", "Climate Party", "Social Democratic Party"))
+pp2024$RegulatedEntityName <- factor(pp2024$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Green Party", "Climate Party", "Workers Party of Britain", "Social Democratic Party"))
  
 pp2024$DonorStatus <- factor(pp2024$DonorStatus, levels = c("Individual", "Company", "Trade Union", "Unincorporated Association", "Friendly Society"))
 
-pp2024$ReportingPeriodName <- factor(pp2024$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024", "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024"))
+pp2024$ReportingPeriodName <- factor(pp2024$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024", "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024", "Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024"))
 
 ```
 
@@ -84,7 +85,7 @@ pp2024$ReportingPeriodName <- factor(pp2024$ReportingPeriodName, levels = c("Pre
 
 # Define all possible levels for DonorStatus and ReportingPeriodName
 donor_statuses <- c('Individual', 'Company', 'Trade Union', 'Unincorporated Association', 'Friendly Society')
-reporting_periods <- c('Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024', 'Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024')
+reporting_periods <- c('Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024', 'Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024', 'Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024')
 
 # Create a complete grid of all combinations
 all_combinations <- expand.grid(
@@ -101,14 +102,7 @@ pp2024_complete <- all_combinations %>%
 
 # creating a table split by week and sum received by each party
 
-pp_w1w2 <- pp2024_complete %>%
-  group_by(RegulatedEntityName, ReportingPeriodName, DonorStatus) %>%
-  summarise(Total = sum(Value), .groups = 'drop') %>%
-  unite("DonorStatus_ReportingPeriodName", DonorStatus, ReportingPeriodName) %>%
-  pivot_wider(names_from = DonorStatus_ReportingPeriodName, values_from = Total, values_fill = list(Total = 0))
-
-# Summarise and reshape the data
-pp_w1w2 <- pp2024_complete %>%
+pp_complete <- pp2024_complete %>%
   group_by(RegulatedEntityName, ReportingPeriodName, DonorStatus) %>%
   summarise(Total = sum(Value), .groups = 'drop') %>%
   unite("DonorStatus_ReportingPeriodName", DonorStatus, ReportingPeriodName) %>%
@@ -116,51 +110,51 @@ pp_w1w2 <- pp2024_complete %>%
 
 # redo column order
 
-pp_w1w2 <- pp_w1w2 %>%
-  select(RegulatedEntityName, `Individual_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Individual_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Company_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Company_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Trade Union_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Trade Union_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Unincorporated Association_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Unincorporated Association_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Friendly Society_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Friendly Society_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`)
+pp_complete <- pp_complete %>%
+  select(RegulatedEntityName, `Individual_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Individual_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Individual_Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`, `Company_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Company_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Company_Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`, `Trade Union_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Trade Union_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Trade Union_Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`, `Unincorporated Association_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Unincorporated Association_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Unincorporated Association_Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`, `Friendly Society_Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`, `Friendly Society_Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`, `Friendly Society_Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`)
 
 ```
 
 ```{r echo=FALSE}
 
 # Format numbers as whole numbers with £ sign and remove decimal places
-pp_w1w2 <- pp_w1w2 %>%
+pp_complete <- pp_complete %>%
   mutate(across(-RegulatedEntityName, ~paste0("£", format(round(., 0), big.mark = ",", scientific = FALSE))))
 
 # Compute row totals
-pp_w1w2 <- pp_w1w2 %>%
+pp_complete <- pp_complete %>%
   mutate(Total = rowSums(across(where(is.character), ~ as.numeric(gsub("[£,]", "", .))), na.rm = TRUE)) %>%
   mutate(Total = sprintf("£%s", format(Total, big.mark = ",", scientific = FALSE)))
 
 # Compute column totals
-column_totals <- pp_w1w2 %>%
+column_totals <- pp_complete %>%
   summarise(across(where(is.character), ~ sum(as.numeric(gsub("[£,]", "", .)), na.rm = TRUE))) %>%
   mutate(RegulatedEntityName = "Total") %>%
   mutate(across(where(is.numeric), ~ sprintf("£%s", format(.x, big.mark = ",", scientific = FALSE))))
 
 # Bind column totals to the original table
-pp_w1w2 <- bind_rows(pp_w1w2, column_totals)
+pp_complete <- bind_rows(pp_complete, column_totals)
 
 # Convert the "Total" column to character to match other columns
-pp_w1w2 <- pp_w1w2 %>%
+pp_complete <- pp_complete %>%
   mutate(across(where(is.numeric), as.character))
 
 # Remove blank spaces in column names
-pp_w1w2 <- remove_spaces(pp_w1w2)
-pp_w1w2 <- replace_pound_zero(pp_w1w2)
+pp_complete <- remove_spaces(pp_complete)
+pp_complete <- replace_pound_zero(pp_complete)
 
 # Ensure the number of column names matches the actual number of columns
-col_names <- c("Party", rep(c("W1", "W2"), times = 5), "")
+col_names <- c("Party", rep(c("W1", "W2", "W3"), times = 5), "")
 
 # Summary table
-pp_w1w2 %>%
+pp_complete %>%
   kable("html", col.names = col_names, align = 'c') %>%
-  add_header_above(c(" " = 1, "Individual" = 2, "Company" = 2, "Trade Union" = 2, "Unincorporated Association" = 2, "Friendly Society" = 2, "Total" = 1)) %>%
+  add_header_above(c(" " = 1, "Individual" = 3, "Company" = 3, "Trade Union" = 3, "Unincorporated Association" = 3, "Friendly Society" = 3, "Total" = 1)) %>%
   kable_styling(full_width = F)
 
 ```
 
-#### 2024 totals: combined for week one and two
+#### 2024 totals: combined
 
 ```{r include=FALSE}
 
@@ -251,16 +245,18 @@ The table below summarises totals for week one and two, split by 2019 and 2024. 
 pp2019 <- read.csv("data2019/alldonations_2019.csv")
 pp2024 <- read.csv("data2024/prepoll1_2024.csv")
 pp2024_2 <- read.csv("data2024/prepoll2_2024.csv")
+pp2024_3 <- read.csv("data2024/prepoll3_2024.csv")
 
 # filtering 2019 pre-poll week 1 and 2
 
 pp2019 <- pp2019 %>%
   filter(ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019"|
-           ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019")
+           ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019"|
+           ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019")
 
 #bind the tables together for comparisons
 
-pptotal <- rbind(pp2019, pp2024, pp2024_2)
+pptotal <- rbind(pp2019, pp2024, pp2024_2, pp2024_3)
 
 #combining the Labour and Cooperative party
 
@@ -297,11 +293,11 @@ pptotal$RegulatedEntityName <- gsub("Plaid Cymru - The Party of Wales", "Plaid C
 
 #creating factors
 
-pptotal$RegulatedEntityName <- factor(pptotal$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Green Party", "Plaid Cymru", "Climate Party", "Social Democratic Party", "Alliance"))
+pptotal$RegulatedEntityName <- factor(pptotal$RegulatedEntityName, levels = c("Conservative Party", "Labour Party", "Liberal Democrats", "Reform UK", "SNP", "Green Party", "Plaid Cymru", "Climate Party", "Social Democratic Party", "Workers Party of Britain", "Alliance"))
 
 pptotal$DonorStatus <- factor(pptotal$DonorStatus, levels = c("Individual", "Company", "Trade Union", "Unincorporated Association", "Friendly Society", "Limited Liability Partnership"))
 
-pptotal$ReportingPeriodName <- factor(pptotal$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019", "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024", "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019", "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024"))
+pptotal$ReportingPeriodName <- factor(pptotal$ReportingPeriodName, levels = c("Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019", "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024", "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019", "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024", "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019", "Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024"))
 
 # Create a complete data frame with all combinations of Party Name and pre-poll period
 
@@ -339,12 +335,14 @@ prepoll_comparison <- prepoll_comparison %>%
   rename(`Week 1 2019` = `Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019`,
          `Week 1 2024` = `Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024`,
          `Week 2 2019` = `Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019`,
-         `Week 2 2024` = `Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`)
+         `Week 2 2024` = `Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024`,
+         `Week 3 2019` = `Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019`,
+         `Week 3 2024`= `Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024`)
 
 # reorder columns
 
 prepoll_comparison <- prepoll_comparison %>%
-  select(RegulatedEntityName, `Week 1 2019`, `Week 1 2024`, `Week 2 2019`, `Week 2 2024`)
+  select(RegulatedEntityName, `Week 1 2019`, `Week 1 2024`, `Week 2 2019`, `Week 2 2024`, `Week 3 2019`, `Week 3 2024`)
 
 # Calculate column totals
 column_totals <- prepoll_comparison %>%
@@ -361,9 +359,9 @@ prepoll_comparison <- replace_pound_zero(prepoll_comparison)
 
 # format table
 
-totals_comparison <- kable(prepoll_comparison, col.names = c("", "2019", "2024", "2019", "2024"), align = 'c') %>%
+totals_comparison <- kable(prepoll_comparison, col.names = c("", "2019", "2024", "2019", "2024", "2019", "2024"), align = 'c') %>%
   kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"), full_width = FALSE) %>%
-  add_header_above(c(" " = 1, "Week One" = 2, "Week Two" = 2)) %>%
+  add_header_above(c(" " = 1, "Week One" = 2, "Week Two" = 2, "Week 3" = 2)) %>%
   row_spec(nrow(prepoll_comparison), bold = TRUE, color = "white", background = "black") 
 
 ```
@@ -389,6 +387,8 @@ pptotal <- pptotal %>%
     ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "week one",
     ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "week two",
     ReportingPeriodName == "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024" ~ "week two",
+    ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019" ~ "week three",
+    ReportingPeriodName == "Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024" ~ "week three",
     TRUE ~ ReportingPeriodName
   ))
 
@@ -400,8 +400,14 @@ pptotal <- pptotal %>%
     ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "2019",
     ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "2024",
     ReportingPeriodName == "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024" ~ "2024",
+    ReportingPeriodName == "Pre-Poll 3 - Party(20/11/19 - 26/11/19) UKPGE 2019" ~ "2019",
+    ReportingPeriodName == "Pre-Poll 3 - Party(13/06/24 - 19/06/24) UKPGE 2024" ~ "2024",
     TRUE ~ ReportingPeriodName
   ))
+
+# setting factor levels for week
+
+pptotal$PrePollWeek <- factor(pptotal$PrePollWeek, level = c("week one", "week two", "week three"))
 
 # filter out for main parties
 
@@ -465,7 +471,7 @@ maintrends_interactive
 
 #### Split by donor type
 
-The table below summarises the total amounts recieved in week 1 and 2 of the campaigns, split by donor type (scroll left to see all columns). 
+The table below summarises the total amounts recieved in week 1, 2 and 3 of the campaigns, split by donor type (scroll left to see all columns). 
 
 ```{r echo=FALSE, warning=FALSE}
 
@@ -544,20 +550,11 @@ pptotal <- pptotal %>%
            RegulatedEntityName == "Liberal Democrats"|
            RegulatedEntityName == "Reform UK")
 
-pptotal <- pptotal %>%
-  mutate(ReportingPeriodName = case_when(
-    ReportingPeriodName == "Pre-Poll 1 - Party(06/11/19 - 12/11/19) UKPGE 2019" ~ "2019",
-    ReportingPeriodName == "Pre-Poll 2 - Party(13/11/19 - 19/11/19) UKPGE 2019" ~ "2019",
-    ReportingPeriodName == "Pre-Poll 1 - Party(30/05/24 - 05/06/24) UKPGE 2024" ~ "2024",
-    ReportingPeriodName == "Pre-Poll 2 - Party(06/06/24 - 12/06/24) UKPGE 2024" ~ "2024",
-    TRUE ~ ReportingPeriodName
-  ))
-
-# this leave 247 donations
+# this leave 350 donations
 
 # Aggregate the data to sum donations by party, period, and donor status
 pptotal_agg <- pptotal %>%
-  group_by(RegulatedEntityName, ReportingPeriodName, DonorStatus) %>%
+  group_by(RegulatedEntityName, Year, DonorStatus) %>%
   summarise(TotalValue = sum(Value), .groups = 'drop')
 
 # Hover text customised
@@ -566,7 +563,7 @@ pptotal_agg <- pptotal_agg %>%
   mutate(HoverText = paste0("Total Value: £", format(round(TotalValue, 0), big.mark = ",", scientific = FALSE), "<br>",
                             "Donor Status: ", DonorStatus, "<br>",
                             "Party: ", RegulatedEntityName, "<br>",
-                            "Year: ", ReportingPeriodName))
+                            "Year: ", Year))
 
 # Create the bar chart
 p <- ggplot(pptotal_agg, aes(x = RegulatedEntityName, y = TotalValue, fill = DonorStatus, text = HoverText)) +
@@ -578,7 +575,7 @@ p <- ggplot(pptotal_agg, aes(x = RegulatedEntityName, y = TotalValue, fill = Don
         legend.justification = "center") +
   scale_y_continuous(labels = scales::label_dollar(prefix = "£", big.mark = ",")) +
   scale_fill_brewer(palette = "Set3") +
-  facet_wrap(~ ReportingPeriodName, scales = "free_x", nrow = 1) +
+  facet_wrap(~ Year, scales = "free_x", nrow = 1) +
   theme(strip.background = element_blank(),
         strip.text = element_text(face = "bold"))
 
